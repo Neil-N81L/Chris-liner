@@ -1,5 +1,5 @@
 import { handle } from "../supabase/functions/whatsapp/engine.js";
-const settings = { fares: { Windhoek: 0, Rehoboth: 100, Kalkrand: 150, Mariental: 200, Keetmanshoop: 300, Aus: 420, "Lüderitz": 500 }, hours: { Windhoek: 0, Rehoboth: 1, Kalkrand: 1.75, Mariental: 2.75, Keetmanshoop: 5, Aus: 7.25, "Lüderitz": 8.25 }, minFare: 100, fareTable: { "Lüderitz|Windhoek": 500 }, "WHK-OMD": { time: "06:30", point: "Wika service station" }, "OMD-WHK": { time: "06:00", point: "" }, stopPoints: { Keetmanshoop: "Keetmanshoop Mall" }, payment: "Pay cash or EFT.", staffPhones: "081 207 3832" };
+const settings = { fares: { Windhoek: 0, Rehoboth: 100, Kalkrand: 150, Mariental: 200, Keetmanshoop: 300, Aus: 420, "Lüderitz": 500 }, hours: { Windhoek: 0, Rehoboth: 1, Kalkrand: 1.75, Mariental: 2.75, Keetmanshoop: 5, Aus: 7.25, "Lüderitz": 8.25 }, minFare: 100, fareTable: { "Lüderitz|Windhoek": 500 }, "WHK-OMD": { time: "08:00", point: "Hakahana taxi rank" }, "OMD-WHK": { time: "08:00", point: "Taxi rank" }, stopPoints: { Keetmanshoop: "Keetmanshoop Mall" }, payment: "Pay cash or EFT.", staffPhones: "081 207 3832" };
 const sessions = {}; const bookings = [];
 const deps = {
   getSettings: async () => settings, getSession: async (w) => sessions[w] ?? null, saveSession: async (w, s) => { sessions[w] = JSON.parse(JSON.stringify(s)); },
