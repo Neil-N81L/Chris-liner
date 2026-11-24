@@ -3,26 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Gibbz Transport Staff</title>
+<title>Chris Liner Staff</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Public+Sans:wght@400;500;600;700&display=swap">
 <style>
-/* Gibbz Transport staff desk. Black, yellow and white, like the Gibbz poster.
+/* Chris Liner staff desk. Navy and sunset orange: the long road south at first light.
    Layout: sunset header with dunes, a trip card (direction, day, stops, bus), then the desk (van seat map | ticket form). */
 :root {
-  --bg: #f4f3ef;
+  --bg: #f4f1ec;
   --surface: #ffffff;
-  --ink: #151515;
+  --ink: #14213d;
   --muted: #5d6779;
   --line: #e3ddd3;
-  --brand: #1c1c1e;
+  --brand: #1b4a8f;
   --brand-ink: #ffffff;
-  --brand-soft: #f1efe6;
-  --accent: #f5c400;
-  --accent-ink: #141414;
-  --accent-soft: #fff4c2;
-  --accent-text: #866a00;
+  --brand-soft: #e4ecf8;
+  --accent: #e2622b;
+  --accent-ink: #ffffff;
+  --accent-soft: #fde9de;
   --sand: #d9a14e;
   --sand-soft: #f8ecd6;
   --free: #eaf3ef;
@@ -34,27 +33,27 @@
   --warn: #a5541b;
   --warn-soft: #fbeadc;
   --bad: #b3261e;
-  --band: #0a0a0b;
-  --band-2: #222225;
+  --band: #0f2447;
+  --band-2: #1d3f78;
   --shadow: 0 1px 2px rgba(20, 33, 61, .06), 0 8px 24px rgba(20, 33, 61, .07);
   --font-display: "Archivo", "Arial Narrow", Arial, sans-serif;
   --font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0f0f10; --surface: #1a1a1c; --ink: #f1f1f1; --muted: #a6a6ad; --line: #2e2e33;
-    --brand: #ededed; --brand-ink: #111111; --brand-soft: #2a2a2e; --accent: #f5c400; --accent-ink: #141414; --accent-soft: #3a3210; --accent-text: #f5c400;
+    --bg: #0d1424; --surface: #162034; --ink: #edf1f8; --muted: #a0aabd; --line: #2a3650;
+    --brand: #79a6ec; --brand-ink: #0d1424; --brand-soft: #1c2d4b; --accent: #f08a55; --accent-ink: #1a0d05; --accent-soft: #3d2416;
     --sand: #e3b56a; --sand-soft: #3a2f1c; --free: #15302a; --free-line: #5cc29a; --free-ink: #8fe0bd;
     --taken: #34405a; --good: #5cc28d; --good-soft: #15352a; --warn: #eda06a; --warn-soft: #3d2818; --bad: #f08a80;
-    --band: #050505; --band-2: #1a1a1c; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25); color-scheme: dark;
+    --band: #081228; --band-2: #12264a; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25); color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0f0f10; --surface: #1a1a1c; --ink: #f1f1f1; --muted: #a6a6ad; --line: #2e2e33;
-  --brand: #ededed; --brand-ink: #111111; --brand-soft: #2a2a2e; --accent: #f5c400; --accent-ink: #141414; --accent-soft: #3a3210; --accent-text: #f5c400;
+  --bg: #0d1424; --surface: #162034; --ink: #edf1f8; --muted: #a0aabd; --line: #2a3650;
+  --brand: #79a6ec; --brand-ink: #0d1424; --brand-soft: #1c2d4b; --accent: #f08a55; --accent-ink: #1a0d05; --accent-soft: #3d2416;
   --sand: #e3b56a; --sand-soft: #3a2f1c; --free: #15302a; --free-line: #5cc29a; --free-ink: #8fe0bd;
   --taken: #34405a; --good: #5cc28d; --good-soft: #15352a; --warn: #eda06a; --warn-soft: #3d2818; --bad: #f08a80;
-  --band: #050505; --band-2: #1a1a1c; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25); color-scheme: dark;
+  --band: #081228; --band-2: #12264a; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25); color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
@@ -69,28 +68,27 @@ button { cursor: pointer; }
 .hero {
   position: relative; color: #fff; overflow: hidden;
   background:
-    radial-gradient(ellipse 55% 110% at 92% 115%, rgba(245, 196, 0, .55) 0%, rgba(245, 196, 0, .18) 34%, rgba(245, 196, 0, 0) 62%),
+    radial-gradient(ellipse 60% 120% at 88% 110%, rgba(246, 152, 74, .95) 0%, rgba(226, 98, 43, .55) 30%, rgba(226, 98, 43, 0) 62%),
     linear-gradient(180deg, var(--band) 0%, var(--band-2) 100%);
   margin-top: calc(-1 * env(safe-area-inset-top, 0px)); padding-top: calc(env(safe-area-inset-top, 0px) + 22px); padding-bottom: 0;
 }
 .hero::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 64px; pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 64' preserveAspectRatio='none'%3E%3Cpath d='M0 40 C150 10 300 12 430 34 S700 60 860 30 S1100 8 1200 26 V64 H0Z' fill='%238a8a8a' fill-opacity='.25'/%3E%3Cpath d='M0 52 C200 30 380 36 560 50 S900 64 1200 44 V64 H0Z' fill='%23f5c400' fill-opacity='.28'/%3E%3C/svg%3E") bottom / 100% 100% no-repeat;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 64' preserveAspectRatio='none'%3E%3Cpath d='M0 40 C150 10 300 12 430 34 S700 60 860 30 S1100 8 1200 26 V64 H0Z' fill='%23d9a14e' fill-opacity='.35'/%3E%3Cpath d='M0 52 C200 30 380 36 560 50 S900 64 1200 44 V64 H0Z' fill='%23e2622b' fill-opacity='.35'/%3E%3C/svg%3E") bottom / 100% 100% no-repeat;
 }
 .hero .wrap { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 16px; }
 .brandrow { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: space-between; }
 .logo { display: flex; align-items: center; gap: 14px; }
 .logo svg { width: 54px; height: 36px; flex: none; filter: drop-shadow(0 2px 6px rgba(0,0,0,.25)); }
 .wordmark { font-family: var(--font-display); font-weight: 900; font-stretch: 120%; font-size: clamp(26px, 5vw, 38px); letter-spacing: .01em; line-height: 1; }
-.wordmark { font-style: italic; transform: skewX(-4deg); }
-.wordmark em { font-style: italic; color: var(--accent-text); font-size: .62em; letter-spacing: .08em; margin-left: 4px; }
+.wordmark em { font-style: normal; color: #ffb27a; }
 .tagline { font-size: 13px; color: #c9d6ee; letter-spacing: .02em; margin-top: 4px; }
 .phones { display: flex; gap: 8px; flex-wrap: wrap; font-size: 13px; align-items: center; }
 .phones span { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.22); border-radius: 999px; padding: 5px 11px; white-space: nowrap; backdrop-filter: blur(4px); }
 .phones span::before { content: "☎ "; opacity: .75; }
 .routeline { display: flex; align-items: center; gap: 0; font-size: 11.5px; color: #dbe4f4; letter-spacing: .04em; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
 .routeline span { display: flex; align-items: center; white-space: nowrap; }
-.routeline span + span::before { content: ""; width: 26px; height: 2px; margin: 0 8px; background: repeating-linear-gradient(90deg, #f5c400 0 5px, transparent 5px 9px); }
+.routeline span + span::before { content: ""; width: 26px; height: 2px; margin: 0 8px; background: repeating-linear-gradient(90deg, #ffb27a 0 5px, transparent 5px 9px); }
 .routeline b { font-weight: 700; color: #fff; }
 .tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 18px; position: relative; z-index: 1; scrollbar-width: none; }
 .tab { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); color: #e3eaf7; padding: 8px 16px; font-weight: 600; border-radius: 999px; white-space: nowrap; display: inline-flex; align-items: center; gap: 7px; transition: background .15s; }
@@ -127,12 +125,12 @@ main { padding-block: 24px 56px; }
 .day .dw { font-size: 10.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
 .day .dd { font-family: var(--font-display); font-weight: 800; font-size: 21px; }
 .day .dm { font-size: 11px; color: var(--muted); }
-.day[aria-pressed="true"] { background: linear-gradient(160deg, #ffd94d, var(--accent)); border-color: var(--accent); color: var(--accent-ink); box-shadow: 0 6px 14px rgba(200, 160, 0, .3); }
-.day[aria-pressed="true"] .dw, .day[aria-pressed="true"] .dm { color: var(--accent-ink); opacity: .75; }
+.day[aria-pressed="true"] { background: linear-gradient(160deg, #f08a4b, var(--accent)); border-color: var(--accent); color: #fff; box-shadow: 0 6px 14px rgba(226, 98, 43, .3); }
+.day[aria-pressed="true"] .dw, .day[aria-pressed="true"] .dm { color: #fff; opacity: .9; }
 .day:disabled { opacity: .45; cursor: not-allowed; background: transparent; border: 1.5px dashed var(--line); }
 .legs { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto; gap: 10px; align-items: end; max-width: 760px; }
-.legs .arrow { padding-bottom: 10px; color: var(--accent-text); font-weight: 800; }
-.legs .fare { font-family: var(--font-display); font-weight: 800; font-size: 19px; white-space: nowrap; background: var(--accent); color: var(--accent-ink); border-radius: 999px; padding: 7px 14px; margin-bottom: 1px; }
+.legs .arrow { padding-bottom: 10px; color: var(--accent); font-weight: 800; }
+.legs .fare { font-family: var(--font-display); font-weight: 800; font-size: 19px; white-space: nowrap; background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 7px 14px; margin-bottom: 1px; }
 @media (max-width: 560px) { .legs { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .legs .arrow { display: none; } .legs .fare { grid-column: 1 / -1; justify-self: start; } }
 .busrow { display: flex; gap: 12px 18px; flex-wrap: wrap; align-items: end; }
 .buses { display: flex; gap: 8px; flex-wrap: wrap; align-items: stretch; }
@@ -141,7 +139,7 @@ main { padding-block: 24px 56px; }
 .bus b { font-family: var(--font-display); font-size: 15px; }
 .bus small { color: var(--muted); font-size: 12px; }
 .bus[aria-pressed="true"] { border-color: var(--brand); background: var(--brand-soft); box-shadow: inset 4px 0 0 var(--accent); }
-.bus.add { border: 1.5px dashed var(--line); background: transparent; justify-content: center; align-items: center; color: var(--accent-text); font-weight: 700; box-shadow: none; }
+.bus.add { border: 1.5px dashed var(--line); background: transparent; justify-content: center; align-items: center; color: var(--accent); font-weight: 700; box-shadow: none; }
 .busveh { display: flex; gap: 8px; align-items: end; flex-wrap: wrap; }
 .busveh .field { min-width: 220px; }
 .fleet { width: 100%; border-collapse: collapse; min-width: 560px; }
@@ -152,21 +150,21 @@ main { padding-block: 24px 56px; }
 .desk { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 22px; align-items: start; }
 @media (max-width: 780px) { .desk { grid-template-columns: minmax(0, 1fr); } }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px; min-width: 0; box-shadow: var(--shadow); }
-.eyebrow { font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-text); font-weight: 800; }
+.eyebrow { font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); font-weight: 800; }
 .triphead { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
 .triphead h2 { font-size: 19px; font-stretch: 105%; }
 .count { font-size: 13px; color: var(--free-ink); background: var(--free); border-radius: 999px; padding: 3px 11px; font-weight: 600; align-self: flex-start; }
 
 /* Van, seen from above: body, windscreen, wheels, sliding door */
 .van { position: relative; border: 2.5px solid var(--ink); background: linear-gradient(180deg, var(--surface), var(--bg)); border-radius: 52px 52px 20px 20px; padding: 30px 16px 16px; max-width: 320px; margin: 0 auto; }
-.van::before { content: ""; position: absolute; left: 26px; right: 26px; top: 9px; height: 10px; border-radius: 10px 10px 4px 4px; background: linear-gradient(180deg, #c9ccd3, #8d929c); opacity: .9; }
+.van::before { content: ""; position: absolute; left: 26px; right: 26px; top: 9px; height: 10px; border-radius: 10px 10px 4px 4px; background: linear-gradient(180deg, #9fc0ea, #6d93c9); opacity: .8; }
 .wheel { position: absolute; width: 8px; height: 40px; border-radius: 4px; background: var(--ink); }
 .wheel.fl { left: -9px; top: 44px; } .wheel.fr { right: -9px; top: 44px; }
 .wheel.rl { left: -9px; bottom: 40px; } .wheel.rr { right: -9px; bottom: 40px; }
 .seat.fold { border-radius: 6px; border-style: dashed; }
 .row.rear { margin-top: 16px; padding-top: 12px; border-top: 1.5px dashed var(--line); }
 .door { position: absolute; left: -2.5px; top: 100px; height: 170px; width: 5px; background: var(--accent); border-radius: 2px; }
-.doorlbl { position: absolute; left: -16px; top: 172px; transform: rotate(-90deg); font-size: 10px; letter-spacing: .12em; color: var(--accent-text); font-weight: 700; text-transform: uppercase; }
+.doorlbl { position: absolute; left: -16px; top: 172px; transform: rotate(-90deg); font-size: 10px; letter-spacing: .12em; color: var(--accent); font-weight: 700; text-transform: uppercase; }
 .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
 .row.front { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1.5px dashed var(--line); }
 .seat { aspect-ratio: 1 / 1.05; max-width: 100%; border-radius: 12px 12px 7px 7px; border: 1.5px solid var(--free-line); background: var(--free); color: var(--free-ink); font-weight: 800; font-family: var(--font-display); font-size: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.05; position: relative; padding: 2px; overflow: hidden; box-shadow: inset 0 5px 0 rgba(47, 138, 104, .16); transition: transform .12s, background .12s; }
@@ -176,8 +174,8 @@ main { padding-block: 24px 56px; }
 .seat.taken small { color: var(--ink); opacity: .75; }
 .seat.taken.staff { cursor: pointer; }
 .seat.paid { box-shadow: inset 0 -5px 0 var(--good); }
-.seat.sel { background: linear-gradient(160deg, #ffd94d, var(--accent)); border-color: #c99f00; color: var(--accent-ink); box-shadow: 0 6px 16px rgba(200, 160, 0, .35); }
-.seat.sel small { color: var(--accent-ink); }
+.seat.sel { background: linear-gradient(160deg, #f08a4b, var(--accent)); border-color: var(--accent); color: #fff; box-shadow: 0 6px 16px rgba(226, 98, 43, .35); }
+.seat.sel small { color: #fff; }
 .seat.taken.sel { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); box-shadow: 0 6px 16px rgba(27, 74, 143, .3); }
 .seat.taken.sel small { color: var(--brand-ink); opacity: 1; }
 .seat.driver { border: 1.5px dashed var(--line); color: var(--muted); font-size: 10px; font-family: var(--font-body); font-weight: 600; cursor: default; background: transparent; box-shadow: none; }
@@ -212,8 +210,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); backgrou
 textarea { min-height: 64px; resize: vertical; }
 .check { display: flex; gap: 8px; align-items: center; font-size: 14px; }
 .check input { width: 18px; height: 18px; accent-color: var(--accent); }
-.btn { border: 0; border-radius: 12px; padding: 11px 20px; font-weight: 700; background: var(--accent); color: var(--accent-ink); box-shadow: 0 4px 12px rgba(200, 160, 0, .28); transition: transform .12s, box-shadow .12s; }
-.btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(200, 160, 0, .35); }
+.btn { border: 0; border-radius: 12px; padding: 11px 20px; font-weight: 700; background: var(--accent); color: var(--accent-ink); box-shadow: 0 4px 12px rgba(226, 98, 43, .28); transition: transform .12s, box-shadow .12s; }
+.btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(226, 98, 43, .35); }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 .btn.ghost { background: transparent; color: var(--brand); border: 1.5px solid var(--brand); box-shadow: none; }
 .btn.danger { background: transparent; color: var(--bad); border: 1.5px solid var(--bad); box-shadow: none; }
@@ -225,7 +223,7 @@ a.btn { display: inline-block; text-decoration: none; text-align: center; }
 
 /* Ticket */
 .ticket { border: 1.5px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--surface); }
-.ticket .top { background: linear-gradient(120deg, var(--band) 0%, var(--band-2) 60%, #3a3000 130%); color: #fff; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ticket .top { background: linear-gradient(120deg, var(--band) 0%, var(--band-2) 60%, #b8562a 130%); color: #fff; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 .ticket .ref { font-family: var(--font-display); font-weight: 900; font-stretch: 115%; font-size: 23px; letter-spacing: .04em; }
 .ticket .body { padding: 14px 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; border-bottom: 2px dashed var(--line); position: relative; }
 .ticket .kv span { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
@@ -248,7 +246,7 @@ th, td { text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--li
 th { font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700; background: var(--bg); }
 tbody tr:hover td { background: color-mix(in srgb, var(--accent-soft) 45%, transparent); }
 tr:last-child td { border-bottom: 0; }
-td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px; width: 48px; color: var(--accent-text); }
+td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px; width: 48px; color: var(--accent); }
 .empty { padding: 28px 16px; text-align: center; color: var(--muted); }
 .toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
 
@@ -256,7 +254,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
 .info { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 28px; }
 .info div { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px 14px 60px; font-size: 14px; color: var(--muted); position: relative; box-shadow: var(--shadow); }
 .info div b { display: block; color: var(--ink); font-family: var(--font-display); font-size: 15px; }
-.info div svg { position: absolute; left: 16px; top: 16px; width: 30px; height: 30px; padding: 6px; border-radius: 10px; background: var(--accent-soft); color: var(--accent-text); }
+.info div svg { position: absolute; left: 16px; top: 16px; width: 30px; height: 30px; padding: 6px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); }
 
 /* Sign-in */
 #login { box-shadow: var(--shadow); border-top: 5px solid var(--accent); }
@@ -273,15 +271,15 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
   <div class="wrap">
     <div class="brandrow">
       <div class="logo">
-        <svg viewBox="0 0 64 44" aria-hidden="true"><path fill="#f5c400" d="M6 36 3 10l15 12L32 2l14 20 15-12-3 26z"/><rect x="6" y="38" width="52" height="5" rx="2" fill="#f5c400"/><circle cx="3" cy="9" r="3" fill="#f5c400"/><circle cx="32" cy="3" r="3" fill="#f5c400"/><circle cx="61" cy="9" r="3" fill="#f5c400"/></svg>
+        <svg viewBox="0 0 92 60" aria-hidden="true"><path fill="#ffffff" d="M46 18c-3 0-5 2-5.5 4.5L34 21 2 8l4 7 26 12-20-2 6 5 16 3-10 6 8 1 9-4 3 10 3-10 9 4 8-1-10-6 16-3 6-5-20 2 26-12 4-7-32 13-6.5 1.5C51 20 49 18 46 18z"/><circle cx="44.5" cy="22" r="1.3" fill="#0f2a50"/></svg>
         <div>
-          <div class="wordmark">GIBBZ<em>TRANSPORT</em></div>
-          <div class="tagline">Windhoek ⇄ Lüderitz · Your journey, our priority</div>
+          <div class="wordmark">CHRIS <em>LINER</em></div>
+          <div class="tagline">Windhoek ⇄ Oranjemund · Sunday to Friday</div>
         </div>
       </div>
-      <div class="phones num" aria-label="Booking phone numbers"><span>081 207 3832</span><button id="signout" hidden>Sign out</button></div>
+      <div class="phones num" aria-label="Booking phone numbers"><span>081 331 1175</span><span>081 295 7277</span><button id="signout" hidden>Sign out</button></div>
     </div>
-    <div class="routeline" aria-label="Route"><span><b>Windhoek</b></span><span>Rehoboth</span><span>Kalkrand</span><span>Mariental</span><span>Keetmanshoop</span><span>Aus</span><span><b>Lüderitz</b></span></div>
+    <div class="routeline" aria-label="Route"><span><b>Windhoek</b></span><span>Rehoboth</span><span>Kalkrand</span><span>Mariental</span><span>Keetmanshoop</span><span>Aus</span><span>Rosh Pinah</span><span><b>Oranjemund</b></span></div>
     <nav class="tabs" role="tablist">
       <button class="tab" role="tab" id="tab-book" data-view="book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>Book a seat</button>
       <button class="tab" role="tab" id="tab-manifest" data-view="manifest" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6M8 3h8v3H8z"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 11h8M8 15h5"/></svg>Manifest</button>
@@ -321,9 +319,9 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
       <div class="panel" id="side"></div>
     </div>
     <div class="info">
-      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18V8a3 3 0 0 1 3-3h1a3 3 0 0 1 3 3v6h3a2 2 0 0 1 2 2v2"/><path d="M5 18h14v3H5z"/></svg><b>Comfortable 14-seater Quantum</b>Silver Toyota Quantum, registration N 2206 L. Sit back, relax, we got you.</div>
-      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg><b>Safe and reliable travel</b>Your journey, our priority. Safe · Reliable · Comfortable.</div>
-      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg><b>Parcels are welcome</b>Send parcels between Windhoek, Lüderitz and the towns along the way. Call 081 207 3832.</div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><b>Private group hire</b>Group transport to any destination across Namibia. Call to arrange.</div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg><b>Passenger liability insurance</b>Every seat on every trip is covered.</div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M4.9 4.9l14.2 14.2M2 12h20M4.9 19.1 19.1 4.9"/></svg><b>Air-conditioned</b>Travel the B1 and the long road south in comfort.</div>
     </div>
   </section>
 
@@ -364,28 +362,27 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
 (() => {
-  const PHONES = "081 207 3832";
+  const PHONES = "081 331 1175 / 081 295 7277";
   const SEATS = 13;
-  // Gibbz Transport's Toyota Quantum, right-hand drive, back to front 4-3-3-2-2 with the driver in the front row:
+  // Chris Liner's Toyota Quantum, right-hand drive, back to front 4-3-3-2-2 with the driver in the front row:
   // seat 1 beside the driver, then 2-3, 4-6, 7-9 and the rear bench 10-13. Four columns; null is open floor or the aisle by the sliding door.
   const LAYOUT = [[null, 1, null, "D"], [null, null, 2, 3], [null, 4, 5, 6], [null, 7, 8, 9], [10, 11, 12, 13]];
   const FOLD = new Set();
-  // Stops in Windhoek -> Lüderitz order (B1, B4). Direction codes stay WHK-OMD / OMD-WHK in the database: WHK-OMD means Windhoek -> Lüderitz.
-  const STOPS = ["Windhoek", "Rehoboth", "Kalkrand", "Mariental", "Keetmanshoop", "Aus", "Lüderitz"];
-  const END = STOPS[STOPS.length - 1];
-  const ABBR = { Windhoek: "WHK", Rehoboth: "REH", Kalkrand: "KAL", Mariental: "MAR", Keetmanshoop: "KMP", Aus: "AUS", "Lüderitz": "LUD" };
+  // Stops in Windhoek -> Oranjemund order (B1, B4, C13).
+  const STOPS = ["Windhoek", "Rehoboth", "Kalkrand", "Mariental", "Keetmanshoop", "Aus", "Rosh Pinah", "Oranjemund"];
+  const ABBR = { Windhoek: "WHK", Rehoboth: "REH", Kalkrand: "KAL", Mariental: "MAR", Keetmanshoop: "KMP", Aus: "AUS", "Rosh Pinah": "RSP", Oranjemund: "OMD" };
   const DIRS = {
-    "WHK-OMD": { from: "Windhoek", to: "Lüderitz" },
-    "OMD-WHK": { from: "Lüderitz", to: "Windhoek" },
+    "WHK-OMD": { from: "Windhoek", to: "Oranjemund" },
+    "OMD-WHK": { from: "Oranjemund", to: "Windhoek" },
   };
   const route = (dir) => (dir === "WHK-OMD" ? STOPS.slice() : STOPS.slice().reverse());
   // Placeholders until the operator saves real values under "Fares & times".
   const DEFAULT_CFG = {
-    fares: { Windhoek: 0, Rehoboth: 100, Kalkrand: 150, Mariental: 200, Keetmanshoop: 300, Aus: 420, "Lüderitz": 500 },
-    hours: { Windhoek: 0, Rehoboth: 1, Kalkrand: 1.75, Mariental: 2.75, Keetmanshoop: 5, Aus: 7.25, "Lüderitz": 8.25 },
+    fares: { Windhoek: 0, Rehoboth: 100, Kalkrand: 200, Mariental: 250, Keetmanshoop: 400, Aus: 500, "Rosh Pinah": 550, Oranjemund: 600 },
+    hours: { Windhoek: 0, Rehoboth: 1, Kalkrand: 2.25, Mariental: 3.25, Keetmanshoop: 5.5, Aus: 8, "Rosh Pinah": 10, Oranjemund: 11 },
     minFare: 100,
-    "WHK-OMD": { time: "08:00", point: "Hakahana taxi rank" },
-    "OMD-WHK": { time: "08:00", point: "Taxi rank" },
+    "WHK-OMD": { time: "07:00", point: "Windhoek (pick-up point to be confirmed)" },
+    "OMD-WHK": { time: "07:00", point: "Oranjemund (pick-up point to be confirmed)" },
     placeholder: true,
   };
   const TZ = "Africa/Windhoek";
@@ -410,7 +407,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
   const parseISO = (s) => { const [y, m, d] = s.split("-").map(Number); return new Date(Date.UTC(y, m - 1, d)); };
   const toISO = (d) => d.toISOString().slice(0, 10);
   const addDays = (s, n) => { const d = parseISO(s); d.setUTCDate(d.getUTCDate() + n); return toISO(d); };
-  const isSaturday = () => false; // the bus runs every day of the week
+  const isSaturday = (s) => parseISO(s).getUTCDay() === 6;
   const fmtDate = (s, opts) => parseISO(s).toLocaleDateString("en-NA", { timeZone: "UTC", ...opts });
   const longDate = (s) => fmtDate(s, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   const shortDate = (s) => fmtDate(s, { weekday: "short", day: "numeric", month: "short" });
@@ -426,7 +423,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
     confirmCancel: null, busy: false, error: "", waName: "",
     bus: 1, buses: 1, trips: [], vehicles: [], perBus: {},
   };
-  const WA_MAIN = "081 207 3832"; // number that receives WhatsApp booking requests
+  const WA_MAIN = "081 331 1175"; // number that receives WhatsApp booking requests
   const tripKey = () => `${S.date}_${S.dir}_${S.bus}`;
   const cfg = () => S.cfg;
   const dirCfg = (dir) => ({ ...DEFAULT_CFG[dir], ...(S.cfg[dir] || {}) });
@@ -443,7 +440,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
   }
   function stopTime(dir, i) {
     const r = route(dir); const H = { ...DEFAULT_CFG.hours, ...(cfg().hours || {}) };
-    const off = dir === "WHK-OMD" ? Number(H[r[i]]) || 0 : (Number(H[END]) || 0) - (Number(H[r[i]]) || 0);
+    const off = dir === "WHK-OMD" ? Number(H[r[i]]) || 0 : (Number(H.Oranjemund) || 0) - (Number(H[r[i]]) || 0);
     const [h, m] = (dirCfg(dir).time || "07:00").split(":").map(Number);
     let mins = Math.round(h * 60 + m + off * 60); const day = Math.floor(mins / 1440); mins = ((mins % 1440) + 1440) % 1440;
     return `${String(Math.floor(mins / 60)).padStart(2, "0")}:${String(mins % 60).padStart(2, "0")}${day > 0 ? " (+1 day)" : ""}`;
@@ -551,7 +548,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
   function confirmText(b) {
     const c = dirCfg(b.dir);
     const pt = pointAt(b.dir, b.from); const where = stopName(b.dir, b.from) + (pt ? ` (${pt})` : "");
-    return `Gibbz Transport booking ${b.ref}\n${legText(b.dir, b.from, b.to)}, ${longDate(b.date)}\nBoards about ${stopTime(b.dir, b.from)} at ${where}\n${S.buses > 1 ? busName(b.bus) + ", s" : "S"}eat ${b.seat} for ${b.name}\nFare ${nad(b.fare)}${b.paid ? " (paid)" : " (pay before departure)"}\nQueries: ${PHONES}`;
+    return `Chris Liner booking ${b.ref}\n${legText(b.dir, b.from, b.to)}, ${longDate(b.date)}\nBoards about ${stopTime(b.dir, b.from)} at ${where}\n${S.buses > 1 ? busName(b.bus) + ", s" : "S"}eat ${b.seat} for ${b.name}\nFare ${nad(b.fare)}${b.paid ? " (paid)" : " (pay before departure)"}\nQueries: ${PHONES}`;
   }
   function renderTicket(b, opts = {}) {
     return el("div", { class: "ticket" },
@@ -565,7 +562,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
         waNumber(b.phone) ? el("a", { class: "btn wa sm", href: waLink(b.phone, confirmText(b)), target: "_blank", rel: "noopener", text: "Send on WhatsApp" }) : null,
         el("button", { class: "btn ghost sm", onclick: () => copy(confirmText(b)), text: "Copy confirmation" }), ...(opts.extra || [])));
   }
-  // WhatsApp click-to-chat: Namibian numbers like 081 207 3832 become 264812073832.
+  // WhatsApp click-to-chat: Namibian numbers like 081 331 1175 become 264813311175.
   function waNumber(p) {
     let d = String(p || "").replace(/\D/g, "");
     if (d.startsWith("00")) d = d.slice(2);
@@ -575,7 +572,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
   const waLink = (p, text) => `https://wa.me/${waNumber(p)}?text=${encodeURIComponent(text)}`;
   function requestText() {
     const r = route(S.dir);
-    return [`Hi Gibbz Transport, I'd like to book a seat.`,
+    return [`Hi Chris Liner, I'd like to book a seat.`,
       `Date: ${longDate(S.date)}`,
       `From: ${r[S.from]} (about ${stopTime(S.dir, S.from)})`,
       `To: ${r[S.to]}`,
@@ -623,7 +620,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
         el("div", { class: "actions" }, el("a", { class: "btn wa", id: "waGo", href: waLink(WA_MAIN, requestText()), target: "_blank", rel: "noopener", text: S.selected ? `Book seat ${S.selected} on WhatsApp` : "Book on WhatsApp" })),
         el("p", { style: "margin:12px 0 0;font-size:13.5px;color:var(--muted)", text: "WhatsApp opens with your trip details filled in. Send it, and we reply to confirm your seat and how to pay. Your seat is held once we confirm." }),
         el("p", { style: "margin:12px 0 4px;font-size:13.5px", text: "WhatsApp not opening? Message or call:" }),
-        el("div", { class: "actions" }, ...["081 207 3832"].map((p) => el("button", { class: "btn ghost sm", onclick: () => copy(p) }, p))));
+        el("div", { class: "actions" }, ...["081 331 1175", "081 295 7277"].map((p) => el("button", { class: "btn ghost sm", onclick: () => copy(p) }, p))));
       return;
     }
 
@@ -705,7 +702,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
   function manifestText() {
     const r = route(S.dir); const list = allBookings(); const L = loads(list);
     const v = vehicleOf(S.bus);
-    const lines = [`GIBBZ TRANSPORT manifest, ${busName(S.bus)}${v ? " (" + [v.name, v.reg].filter(Boolean).join(", ") + ")" : ""}${v && v.driver ? ", driver " + v.driver : ""}`, `${DIRS[S.dir].from} to ${DIRS[S.dir].to}, ${longDate(S.date)}, departs ${dirCfg(S.dir).time}`, `${list.length} passengers, fullest stretch ${Math.max(0, ...L.aboard)}/${SEATS}`];
+    const lines = [`CHRIS LINER manifest, ${busName(S.bus)}${v ? " (" + [v.name, v.reg].filter(Boolean).join(", ") + ")" : ""}${v && v.driver ? ", driver " + v.driver : ""}`, `${DIRS[S.dir].from} to ${DIRS[S.dir].to}, ${longDate(S.date)}, departs ${dirCfg(S.dir).time}`, `${list.length} passengers, fullest stretch ${Math.max(0, ...L.aboard)}/${SEATS}`];
     r.forEach((s, i) => {
       const on = list.filter((b) => b.from === i), off = list.filter((b) => b.to === i);
       if (!on.length && !off.length) return;
@@ -738,12 +735,12 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
     };
     const entries = Object.entries(cfg().fareTable || {}).map(([k, v]) => [...k.split("|"), v])
       .sort((x, y) => STOPS.indexOf(y[0]) + STOPS.indexOf(y[1]) - STOPS.indexOf(x[0]) - STOPS.indexOf(x[1]));
-    for (const [a, b, v] of entries) body.append(row(b === "Windhoek" ? b : a, b === "Windhoek" ? a : b, v));
+    for (const [a, b, v] of entries) body.append(row(b === "Oranjemund" || b === "Rosh Pinah" ? b : a, b === "Oranjemund" || b === "Rosh Pinah" ? a : b, v));
     return el("div", { class: "field" },
       el("div", { style: "font-weight:600;font-size:13px", text: "Price list (same price both ways)" }),
       el("div", { class: "hint", text: "These prices are used exactly. Trips not on this list use the fares from Windhoek above." }),
       el("div", { style: "overflow-x:auto" }, el("table", { class: "faretable" }, el("thead", {}, el("tr", {}, el("th", { text: "From" }), el("th", { text: "To" }), el("th", { text: "Price (N$)" }), el("th"))), body)),
-      el("div", {}, el("button", { class: "btn ghost sm", type: "button", text: "+ Add price", onclick: () => body.append(row("Windhoek", END, "")) })));
+      el("div", {}, el("button", { class: "btn ghost sm", type: "button", text: "+ Add price", onclick: () => body.append(row("Oranjemund", "Windhoek", "")) })));
   }
   function renderFares() {
     const f = $("faresForm"); f.replaceChildren();
@@ -796,7 +793,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
     if (!name || !phone) { S.error = "Enter the passenger's name and cell number."; render(); return; }
     if (!/^[+0-9 ()-]{7,}$/.test(phone)) { S.error = "That cell number doesn't look right. Use digits, e.g. 081 234 5678."; render(); return; }
     const seat = S.selected;
-    const row = { ref: "GZ-" + rand(5), trip_date: S.date, dir: S.dir, bus_no: S.bus, seat, from_idx: S.from, to_idx: S.to, name, phone,
+    const row = { ref: "CL-" + rand(5), trip_date: S.date, dir: S.dir, bus_no: S.bus, seat, from_idx: S.from, to_idx: S.to, name, phone,
       fare: Number(form.fare.value) || 0, pickup: form.pickup.value.trim(), paid: form.paid.checked, method: form.paid.checked ? form.method.value : "",
       notes: form.notes.value.trim(), source: "staff" };
     S.busy = true; S.error = ""; render();

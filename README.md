@@ -1,10 +1,10 @@
-# GIBBZ Transport WhatsApp booking bot
+# Chris Liner WhatsApp booking bot
 
-Customers message the GIBBZ Transport WhatsApp number (081 207 3832) and the bot books their seats. It asks for:
+Customers message the Chris Liner WhatsApp number and the bot books their seats. It asks for:
 
-1. direction (to Lüderitz or to Windhoek)
-2. travel day (the next 10 days; the bus runs every day)
-3. where they get on and where they get off (Windhoek, Rehoboth, Kalkrand, Mariental, Keetmanshoop, Aus, Lüderitz), with the fare, the approximate time and the pick-up spot at each stop
+1. direction (to Oranjemund or to Windhoek)
+2. travel day (the next 10 operating days; Saturdays are skipped)
+3. where they get on and where they get off (Windhoek, Rehoboth, Kalkrand, Mariental, Keetmanshoop, Aus, Rosh Pinah, Oranjemund), with the fare, the approximate time and the pick-up spot at each stop
 4. how many people (1 to 6; bigger groups are passed to staff)
 5. which seats (the bot lists the free seats for that stretch, or picks any free seats). The Quantum seats 13 passengers: seat 1 is beside the driver, then rows 2-3, 4-6 and 7-9, and 10-13 is the back bench.
 6. each passenger's full name
@@ -12,9 +12,7 @@ Customers message the GIBBZ Transport WhatsApp number (081 207 3832) and the bot
 8. how they will pay (cash on the bus, EFT or eWallet)
 9. a summary, then **Confirm booking**
 
-The customer gets a reference such as `GZ-7KQ2M`. A seat can't be sold twice on overlapping stretches, because the database refuses it. The customer can also send *My bookings*, *staff* to hand the chat to a person (the bot then stays quiet for 12 hours or until they send *menu*), or *cancel* at any point.
-
-The route is Windhoek, Rehoboth, Kalkrand, Mariental, Keetmanshoop, Aus and Lüderitz (B1 and B4). In the database the direction codes are still `WHK-OMD` (Windhoek to Lüderitz) and `OMD-WHK` (Lüderitz to Windhoek), from the company's earlier name and route.
+The customer gets a reference such as `CL-7KQ2M`. A seat can't be sold twice on overlapping stretches, because the database refuses it. The customer can also send *My bookings*, *staff* to hand the chat to a person (the bot then stays quiet for 12 hours or until they send *menu*), or *cancel* at any point.
 
 ## Day-before reconfirmation
 
@@ -31,7 +29,7 @@ WhatsApp only lets a business message someone first with a template that Meta ha
 - **Language:** English (`en`)
 - **Body:**
 
-  > Hi {{1}}, this is GIBBZ Transport. You are booked for {{2}}, {{3}}, seat {{4}}. Please be at {{5}} by about {{6}}. Do you still want this booking? Reference {{7}}.
+  > Hi {{1}}, this is Chris Liner. You are booked for {{2}}, {{3}}, seat {{4}}. Please be at {{5}} by about {{6}}. Do you still want this booking? Reference {{7}}.
 
 - **Buttons:** two *Quick reply* buttons, `Yes, keep it` and `Cancel booking`, in that order.
 
@@ -47,7 +45,7 @@ Each driver gets their bus's passenger list on WhatsApp, with a link to a live p
   - **Category:** Utility
   - **Name:** `driver_manifest`
   - **Language:** English (`en`)
-  - **Body:** `Hi {{1}}, your GIBBZ Transport passenger list for {{2}}, {{3}}, is ready: {{4}} passengers booked so far. Tap below to open it. The list updates itself if bookings change.`
+  - **Body:** `Hi {{1}}, your Chris Liner passenger list for {{2}}, {{3}}, is ready: {{4}} passengers booked so far. Tap below to open it. The list updates itself if bookings change.`
   - **Button:** *Visit website*, type *Dynamic*, URL `https://neil-n81l.github.io/Chris-liner/driver.html?t={{1}}`, button text `Open passenger list`
 
 A driver's link only works for their own bus and stops working two days after the trip.
@@ -59,7 +57,7 @@ At 20:00 the evening before travel, after the 17:00 confirmations, the bot sends
 - **Category:** Utility
 - **Name:** `trip_details`
 - **Language:** English (`en`)
-- **Body:** `Hi {{1}}, your GIBBZ Transport trip is confirmed. {{2}}, {{3}}, seat {{4}}. Please be at {{5}} by {{6}}. Your driver is {{7}}. Reference {{8}}. Safe travels!`
+- **Body:** `Hi {{1}}, your Chris Liner trip is confirmed. {{2}}, {{3}}, seat {{4}}. Please be at {{5}} by {{6}}. Your driver is {{7}}. Reference {{8}}. Safe travels!`
 
 ## Several buses a day
 
@@ -92,7 +90,7 @@ Only people on the `staff` list can see or change bookings. Under **Authenticati
 
 ### 1. Meta business account and app
 
-1. Go to <https://business.facebook.com> and create a Meta Business account for GIBBZ Transport, if there isn't one yet.
+1. Go to <https://business.facebook.com> and create a Meta Business account for Chris Liner, if there isn't one yet.
 2. Go to <https://developers.facebook.com/apps>, then **Create app** > **Other** > **Business**, and link it to that business account.
 3. In the app, add the **WhatsApp** product.
 
@@ -101,9 +99,9 @@ Only people on the `staff` list can see or change bookings. Under **Authenticati
 WhatsApp Cloud API needs a number that is **not** in use on the normal WhatsApp or WhatsApp Business app. You have two choices:
 
 - Register a new number (a new SIM is fine) under **WhatsApp > API Setup > Add phone number**.
-- Move 081 207 3832 to the API. That number then stops working in the WhatsApp phone app, and staff reply from the Meta Business Suite inbox or a connected tool instead.
+- Move 081 331 1175 or 081 295 7277 to the API. That number then stops working in the WhatsApp phone app, and staff reply from the Meta Business Suite inbox or a connected tool instead.
 
-Meta checks the number with an SMS or a call. The business display name ("GIBBZ Transport") also has to be approved.
+Meta checks the number with an SMS or a call. The business display name ("Chris Liner") also has to be approved.
 
 ### 3. Permanent access token
 
@@ -120,7 +118,7 @@ In the Supabase dashboard, open project **chris-liner** > **Edge Functions** > *
 | `WHATSAPP_TOKEN` | the token from step 3 |
 | `WHATSAPP_PHONE_NUMBER_ID` | **WhatsApp > API Setup** > *Phone number ID* (a long number, not the phone number itself) |
 | `WHATSAPP_APP_SECRET` | **App settings > Basic** > *App secret* |
-| `WHATSAPP_VERIFY_TOKEN` | any phrase you make up, e.g. `gibbz-2026-bus` |
+| `WHATSAPP_VERIFY_TOKEN` | any phrase you make up, e.g. `chrisliner-2026-bus` |
 
 ### 5. Connect the webhook
 
@@ -137,7 +135,7 @@ Send "Hi" to the number from your own phone. While the app is in development mod
 
 The fares, stop times and payment text are placeholders in the `settings` table:
 
-- prices between stops (the price list under Fares & times; known so far: Lüderitz to Windhoek N$ 500, Rehoboth N$ 470, Mariental N$ 430, Keetmanshoop N$ 260; Windhoek to Keetmanshoop N$ 300)
+- fare from Windhoek to each stop
 - hours from Windhoek to each stop
 - minimum fare
 - departure time and departure point for each direction
