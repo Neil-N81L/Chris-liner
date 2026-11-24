@@ -332,7 +332,8 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
       <h2 id="manTitle" style="font-size:19px">Manifest</h2>
       <div class="actions">
         <input type="text" id="manSearch" placeholder="Find name, phone or ref" style="width:220px">
-        <button class="btn ghost sm" id="copyManifest">Copy for driver</button>
+        <button class="btn ghost sm" id="copyManifest">Copy list</button>
+        <button class="btn wa sm" id="sendDriver">Send to driver on WhatsApp</button>
       </div>
     </div>
     <div class="tablewrap"><table>
@@ -712,6 +713,13 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
     return lines.join("\n");
   }
   $("copyManifest").addEventListener("click", () => copy(manifestText()));
+  // Paperless: open WhatsApp to the driver of this bus with the list and a live link that keeps itself up to date.
+  $("sendDriver").addEventListener("click", () => {
+    const v = vehicleOf(S.bus); const t = S.trips.find((x) => x.bus_no === S.bus);
+    if (!v || !waNumber(v.driver_phone)) { toast(`First choose a vehicle for ${busName(S.bus)} whose driver has a cell number (Book a seat, step 4; numbers under Fares & times).`); return; }
+    const link = new URL("driver.html?t=" + t.manifest_token, location.href).href;
+    window.open(waLink(v.driver_phone, manifestText() + "\n\nLive list (updates itself): " + link), "_blank", "noopener");
+  });
   $("manSearch").addEventListener("input", () => renderManifest());
 
   // ---------- fares ----------
@@ -857,7 +865,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
     vb.append(el("div", { class: "field" }, el("label", { for: "busVehicle", text: `Vehicle for ${busName(S.bus)}` }),
       el("select", { id: "busVehicle", onchange: (e) => setVehicle(S.bus, Number(e.target.value)) },
         el("option", { value: "", text: "Not set" }),
-        ...S.vehicles.filter((v) => v.active || v.id === cur?.vehicle_id).map((v) => el("option", { value: String(v.id), selected: v.id === cur?.vehicle_id, text: [v.name, v.reg, v.driver && "driver " + v.driver].filter(Boolean).join(" · ") })))));
+        ...S.vehicles.filter((v) => v.active || v.id === cur?.vehicle_id).map((v) => el("option", { value: String(v.id), selected: v.id === cur?.vehicle_id, text: [v.name, v.reg, v.driver && "driver " + v.driver, v.driver_phone].filter(Boolean).join(" · ") })))));
     const dflt = Number(cfg().busesPerDay?.[S.dir]) || 1;
     if (S.bus === S.buses && S.bus > dflt && !(S.perBus[S.bus])) vb.append(el("button", { class: "btn ghost sm", style: "margin-bottom:4px", text: `Remove ${busName(S.bus)}`, onclick: () => removeBus(S.bus) }));
   }
@@ -868,19 +876,20 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
       const name = el("input", { type: "text", value: v.name, "aria-label": "Name", placeholder: "e.g. Quantum 1" });
       const reg = el("input", { type: "text", value: v.reg, "aria-label": "Registration", placeholder: "N 12345 W" });
       const drv = el("input", { type: "text", value: v.driver, "aria-label": "Usual driver", placeholder: "Driver" });
+      const dph = el("input", { type: "text", value: v.driver_phone || "", inputmode: "tel", "aria-label": "Driver's cell number", placeholder: "081 234 5678" });
       const act = el("input", { type: "checkbox", checked: v.active !== false, "aria-label": "In service" });
       const save = el("button", { class: "btn ghost sm", type: "button", text: v.id ? "Save" : "Add", onclick: async () => {
-        const rec = { name: name.value.trim() || "Bus", reg: reg.value.trim(), driver: drv.value.trim(), active: act.checked };
+        const rec = { name: name.value.trim() || "Bus", reg: reg.value.trim(), driver: drv.value.trim(), driver_phone: dph.value.trim(), active: act.checked };
         const { error } = v.id ? await sb.from("vehicles").update(rec).eq("id", v.id) : await sb.from("vehicles").insert(rec);
         toast(error ? "Couldn't save. Try again." : v.id ? "Vehicle saved" : "Vehicle added");
         await loadVehicles(); renderFleet();
       } });
-      return el("tr", {}, el("td", {}, name), el("td", {}, reg), el("td", {}, drv), el("td", { style: "text-align:center" }, act), el("td", {}, save));
+      return el("tr", {}, el("td", {}, name), el("td", {}, reg), el("td", {}, drv), el("td", {}, dph), el("td", { style: "text-align:center" }, act), el("td", {}, save));
     };
     for (const v of S.vehicles) tb.append(row(v));
-    tb.append(row({ name: "", reg: "", driver: "", active: true }));
+    tb.append(row({ name: "", reg: "", driver: "", driver_phone: "", active: true }));
     box.append(el("div", { style: "overflow-x:auto" }, el("table", { class: "fleet" },
-      el("thead", {}, el("tr", {}, el("th", { text: "Vehicle" }), el("th", { text: "Registration" }), el("th", { text: "Usual driver" }), el("th", { text: "In service" }), el("th"))), tb)));
+      el("thead", {}, el("tr", {}, el("th", { text: "Vehicle" }), el("th", { text: "Registration" }), el("th", { text: "Usual driver" }), el("th", { text: "Driver cell" }), el("th", { text: "In service" }), el("th"))), tb)));
   }
 
   // ---------- data ----------
@@ -889,7 +898,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
     const trip = tripKey();
     const [res, tr] = await Promise.all([
       sb.from("bookings").select("*").eq("trip_date", S.date).eq("dir", S.dir).eq("status", "confirmed"),
-      sb.from("trips").select("bus_no, vehicle_id").eq("trip_date", S.date).eq("dir", S.dir),
+      sb.from("trips").select("bus_no, vehicle_id, manifest_token").eq("trip_date", S.date).eq("dir", S.dir),
     ]);
     const { data, error } = res;
     if (trip !== tripKey()) return;

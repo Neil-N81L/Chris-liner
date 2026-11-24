@@ -4,7 +4,7 @@ Customers message the Chris Liner WhatsApp number and the bot books their seats.
 
 1. direction (to Oranjemund or to Windhoek)
 2. travel day (the next 10 operating days; Saturdays are skipped)
-3. where they get on and where they get off (Windhoek, Rehoboth, Mariental, Keetmanshoop, Aus, Rosh Pinah, Oranjemund), with the fare and the approximate time at each stop
+3. where they get on and where they get off (Windhoek, Rehoboth, Kalkrand, Mariental, Keetmanshoop, Aus, Rosh Pinah, Oranjemund), with the fare, the approximate time and the pick-up spot at each stop
 4. how many people (1 to 6; bigger groups are passed to staff)
 5. which seats (the bot lists the free seats for that stretch, or picks any free seats). The Quantum seats 13 passengers: seat 1 is beside the driver, then rows 2-3, 4-6 and 7-9, and 10-13 is the back bench.
 6. each passenger's full name
@@ -16,7 +16,7 @@ The customer gets a reference such as `CL-7KQ2M`. A seat can't be sold twice on 
 
 ## Day-before reconfirmation
 
-Every day at 16:00 (Windhoek time), the bot sends a WhatsApp message to each passenger travelling the next day. The message asks if they still want the booking and has two buttons:
+Every day at 17:00 (Windhoek time), the bot sends a WhatsApp message to each passenger travelling the next day. The message asks if they still want the booking and has two buttons:
 - **Yes, keep it** marks the booking as reconfirmed.
 - **Cancel booking** cancels it and frees the seat straight away.
 
@@ -34,6 +34,30 @@ WhatsApp only lets a business message someone first with a template that Meta ha
 - **Buttons:** two *Quick reply* buttons, `Yes, keep it` and `Cancel booking`, in that order.
 
 Meta usually approves templates within minutes to a day.
+
+## Driver lists (paperless manifest)
+
+Each driver gets their bus's passenger list on WhatsApp, with a link to a live page that updates itself when bookings change. The page lists every stop in order, who gets on and off, a **Call** button for each passenger, and how much cash to collect.
+
+- **Set it up:** under **Fares & times > Buses & fleet**, enter each vehicle's driver and **Driver cell**. Then, on **Book a seat**, choose the vehicle for each bus in step 4.
+- **Send it by hand (works now):** on the **Manifest** tab, click **Send to driver on WhatsApp**. WhatsApp opens on your phone or computer with the list and the live link filled in, ready to send to the driver.
+- **Automatic (once WhatsApp is connected):** every evening at 20:00, the bot sends each driver the link to tomorrow's list. This needs a second template in **WhatsApp Manager > Message templates**:
+  - **Category:** Utility
+  - **Name:** `driver_manifest`
+  - **Language:** English (`en`)
+  - **Body:** `Hi {{1}}, your Chris Liner passenger list for {{2}}, {{3}}, is ready: {{4}} passengers booked so far. Tap below to open it. The list updates itself if bookings change.`
+  - **Button:** *Visit website*, type *Dynamic*, URL `https://neil-n81l.github.io/Chris-liner/driver.html?t={{1}}`, button text `Open passenger list`
+
+A driver's link only works for their own bus and stops working two days after the trip.
+
+## Final trip details for passengers
+
+At 20:00 the evening before travel, after the 17:00 confirmations, the bot sends every passenger who is still booked a final message: their seat and bus, the pick-up spot and time, and the driver's name. The driver's name comes from the vehicle chosen for that bus. If no vehicle is chosen yet, the message says the driver is "to be confirmed". This needs a third template:
+
+- **Category:** Utility
+- **Name:** `trip_details`
+- **Language:** English (`en`)
+- **Body:** `Hi {{1}}, your Chris Liner trip is confirmed. {{2}}, {{3}}, seat {{4}}. Please be at {{5}} by {{6}}. Your driver is {{7}}. Reference {{8}}. Safe travels!`
 
 ## Several buses a day
 

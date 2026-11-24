@@ -6,7 +6,7 @@
 //   WHATSAPP_APP_SECRET       the Meta app's App Secret, used to check that requests come from Meta
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by Supabase automatically.
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
-import { handle, reconfirmBatches, tomorrowISO, todayISO, waFromLocal, baseRef } from "./engine.js";
+import { handle, reconfirmBatches, tripDetailBatches, tomorrowISO, todayISO, waFromLocal, baseRef, route, stopTime, boardAt, longDate, DIRS } from "./engine.js";
 
 const env = (k: string) => Deno.env.get(k) ?? "";
 const db = createClient(env("SUPABASE_URL"), env("SUPABASE_SERVICE_ROLE_KEY"), { auth: { persistSession: false } });
@@ -98,11 +98,98 @@ async function sendTemplate(to: string, params: string[], ref: string) {
   return r.ok;
 }
 
+// ---------- driver manifest ----------
+// Each bus on a trip has a secret manifest_token (trips table). The driver's link opens docs/driver.html, which reads this JSON.
+const MANIFEST_PAGE = env("MANIFEST_PAGE_URL") || "https://neil-n81l.github.io/Chris-liner/driver.html";
+async function manifestJSON(token: string) {
+  const { data: trip } = await db.from("trips").select("trip_date, dir, bus_no, vehicle_id").eq("manifest_token", token).maybeSingle();
+  if (!trip || trip.trip_date < todayISO(new Date(Date.now() - 2 * 86400000))) return null; // links stop working two days after the trip
+  const [cfg, veh, bk, trips] = await Promise.all([
+    deps.getSettings(),
+    trip.vehicle_id ? db.from("vehicles").select("name, reg, driver").eq("id", trip.vehicle_id).maybeSingle() : Promise.resolve({ data: null }),
+    db.from("bookings").select("seat, name, phone, from_idx, to_idx, pickup, notes, paid, fare, reconfirm_status").eq("trip_date", trip.trip_date).eq("dir", trip.dir).eq("bus_no", trip.bus_no).eq("status", "confirmed").order("seat"),
+    db.from("trips").select("bus_no").eq("trip_date", trip.trip_date).eq("dir", trip.dir),
+  ]);
+  const r = route(trip.dir);
+  return {
+    date: trip.trip_date, dateText: longDate(trip.trip_date), dir: trip.dir, route: DIRS[trip.dir].label, bus: trip.bus_no,
+    buses: Math.max(Number(cfg.busesPerDay?.[trip.dir]) || 1, ...(trips.data ?? []).map((t: any) => t.bus_no)),
+    vehicle: veh.data ? { name: veh.data.name, reg: veh.data.reg, driver: veh.data.driver } : null,
+    stops: r.map((name, i) => ({ name, time: stopTime(cfg, trip.dir, i), where: boardAt(cfg, trip.dir, i) })),
+    passengers: (bk.data ?? []).map((b: any) => ({ seat: b.seat, name: b.name, phone: b.phone, on: b.from_idx, off: b.to_idx, pickup: b.pickup, notes: b.notes, paid: b.paid, fare: Number(b.fare), reconfirm: b.reconfirm_status })),
+    updated: new Date().toISOString(),
+  };
+}
+const CORS = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET", "Cache-Control": "no-store" };
+
+// Evening before: tell each driver (vehicle with a driver cell number) that tomorrow's list is ready, with their live link.
+async function sendDriverTemplate(to: string, params: string[], token: string) {
+  const payload = {
+    messaging_product: "whatsapp", to, type: "template",
+    template: {
+      name: env("WHATSAPP_DRIVER_TEMPLATE") || "driver_manifest", language: { code: env("WHATSAPP_TEMPLATE_LANG") || "en" },
+      components: [
+        { type: "body", parameters: params.map((p) => ({ type: "text", text: p })) },
+        { type: "button", sub_type: "url", index: "0", parameters: [{ type: "text", text: token }] },
+      ],
+    },
+  };
+  const r = await fetch(`${GRAPH}/${env("WHATSAPP_PHONE_NUMBER_ID")}/messages`, {
+    method: "POST", headers: { Authorization: `Bearer ${env("WHATSAPP_TOKEN")}`, "Content-Type": "application/json" }, body: JSON.stringify(payload),
+  });
+  if (!r.ok) console.error("driver template failed", r.status, await r.text());
+  return r.ok;
+}
+// Final message to passengers: trip confirmed, seat, bus, pick-up spot and time, driver's name.
+async function sendTripDetails(now: Date) {
+  const date = tomorrowISO(now);
+  const [cfg, bk, tr] = await Promise.all([
+    deps.getSettings(),
+    db.from("bookings").select("id, ref, phone, wa_id, name, trip_date, dir, bus_no, from_idx, to_idx, seat").eq("status", "confirmed").eq("trip_date", date).is("final_sent_at", null),
+    db.from("trips").select("dir, bus_no, vehicles(driver)").eq("trip_date", date),
+  ]);
+  if (bk.error) throw bk.error;
+  const drivers: Record<string, string> = {};
+  for (const t of (tr.data ?? []) as any[]) if (t.vehicles?.driver) drivers[`${t.dir}|${t.bus_no}`] = t.vehicles.driver;
+  let sent = 0, failed = 0;
+  for (const g of tripDetailBatches(bk.data ?? [], cfg, drivers)) {
+    const payload = { messaging_product: "whatsapp", to: g.to, type: "template", template: {
+      name: env("WHATSAPP_TRIP_TEMPLATE") || "trip_details", language: { code: env("WHATSAPP_TEMPLATE_LANG") || "en" },
+      components: [{ type: "body", parameters: g.params.map((p: string) => ({ type: "text", text: p })) }] } };
+    const r = await fetch(`${GRAPH}/${env("WHATSAPP_PHONE_NUMBER_ID")}/messages`, {
+      method: "POST", headers: { Authorization: `Bearer ${env("WHATSAPP_TOKEN")}`, "Content-Type": "application/json" }, body: JSON.stringify(payload),
+    });
+    if (r.ok) { sent++; await db.from("bookings").update({ final_sent_at: now.toISOString() }).in("id", g.ids); }
+    else { failed++; console.error("trip details failed", r.status, await r.text()); }
+  }
+  return { sent, failed };
+}
+async function sendDriverManifests(now: Date) {
+  const date = tomorrowISO(now);
+  const { data: trips, error } = await db.from("trips").select("dir, bus_no, manifest_token, vehicle_id, vehicles(driver, driver_phone)")
+    .eq("trip_date", date).is("manifest_sent_at", null).not("vehicle_id", "is", null);
+  if (error) throw error;
+  let sent = 0, skipped = 0;
+  for (const t of (trips ?? []) as any[]) {
+    const to = waFromLocal(t.vehicles?.driver_phone || "");
+    if (to.length < 11) { skipped++; continue; }
+    const { count } = await db.from("bookings").select("id", { count: "exact", head: true }).eq("trip_date", date).eq("dir", t.dir).eq("bus_no", t.bus_no).eq("status", "confirmed");
+    const ok = await sendDriverTemplate(to, [(t.vehicles?.driver || "driver").split(" ")[0], longDate(date), `${DIRS[t.dir].label}, Bus ${t.bus_no}`, String(count ?? 0)], t.manifest_token);
+    if (ok) { sent++; await db.from("trips").update({ manifest_sent_at: now.toISOString() }).eq("manifest_token", t.manifest_token); }
+  }
+  return { sent, skipped };
+}
+
 // Scheduled jobs, called by pg_cron (see migration 004) with a one-time x-cron-token.
 //   task=send:    message everyone travelling tomorrow who hasn't been asked yet
 //   task=noreply: mark today's unanswered requests as no_reply so staff can follow up
+//   task=drivers: (20:00) send each driver the link to tomorrow's live list, and each passenger their final trip details
 async function runJob(task: string) {
   const now = new Date();
+  if (task === "drivers") {
+    if (!env("WHATSAPP_TOKEN")) return { skipped: "WhatsApp is not connected yet" };
+    return { drivers: await sendDriverManifests(now), passengers: await sendTripDetails(now) };
+  }
   if (task === "noreply") {
     const { data, error } = await db.from("bookings").update({ reconfirm_status: "no_reply" })
       .eq("status", "confirmed").eq("reconfirm_status", "sent").lte("trip_date", todayISO(now)).select("id");
@@ -148,6 +235,12 @@ function inputOf(msg: any) {
 
 Deno.serve(async (req) => {
   const url = new URL(req.url);
+  if (req.method === "GET" && url.searchParams.has("manifest")) {
+    const token = url.searchParams.get("manifest") ?? "";
+    if (!/^[0-9a-f-]{36}$/.test(token)) return new Response("Not found", { status: 404, headers: CORS });
+    const m = await manifestJSON(token).catch((e) => { console.error("manifest failed", e); return null; });
+    return m ? Response.json(m, { headers: CORS }) : new Response("Not found", { status: 404, headers: CORS });
+  }
   if (req.method === "GET") {
     // Meta's one-time webhook check
     if (url.searchParams.get("hub.mode") === "subscribe" && url.searchParams.get("hub.verify_token") === env("WHATSAPP_VERIFY_TOKEN") && env("WHATSAPP_VERIFY_TOKEN"))

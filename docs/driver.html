@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Chris Liner Driver List</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Driver's passenger list: one stop after another, who gets on and off, with call buttons and cash to collect. */
+:root {
+  --bg: #f4f1ec; --surface: #fff; --ink: #14213d; --muted: #5d6779; --line: #e3ddd3;
+  --brand: #1b4a8f; --accent: #e2622b; --accent-soft: #fde9de; --good: #1f7a4d; --good-soft: #e1f2e8; --warn: #a5541b; --warn-soft: #fbeadc;
+  --band: #0f2447; --band-2: #1d3f78;
+  --font-display: "Archivo", "Arial Narrow", Arial, sans-serif; --font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #0d1424; --surface: #162034; --ink: #edf1f8; --muted: #a0aabd; --line: #2a3650; --brand: #79a6ec; --accent: #f08a55; --accent-soft: #3d2416; --good: #5cc28d; --good-soft: #15352a; --warn: #eda06a; --warn-soft: #3d2818; --band: #081228; --band-2: #12264a; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #0d1424; --surface: #162034; --ink: #edf1f8; --muted: #a0aabd; --line: #2a3650; --brand: #79a6ec; --accent: #f08a55; --accent-soft: #3d2416; --good: #5cc28d; --good-soft: #15352a; --warn: #eda06a; --warn-soft: #3d2818; --band: #081228; --band-2: #12264a; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.45; }
+.wrap { max-width: 640px; margin: 0 auto; padding: 0 16px; }
+header { color: #fff; padding: calc(env(safe-area-inset-top, 0px) + 18px) 0 22px;
+  background: radial-gradient(ellipse 70% 130% at 90% 120%, rgba(246,152,74,.9) 0%, rgba(226,98,43,.5) 30%, rgba(226,98,43,0) 62%), linear-gradient(180deg, var(--band), var(--band-2)); }
+.brand { font-family: var(--font-display); font-weight: 900; font-stretch: 120%; font-size: 22px; letter-spacing: .01em; }
+.brand em { font-style: normal; color: #ffb27a; }
+h1 { font-family: var(--font-display); font-size: 24px; margin: 8px 0 2px; line-height: 1.15; }
+.sub { color: #d5def0; font-size: 14px; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.chip { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); border-radius: 999px; padding: 4px 11px; font-size: 13px; font-weight: 600; }
+main.wrap { padding-top: 16px; padding-bottom: 40px; }
+.totals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+.tot { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; }
+.tot b { display: block; font-family: var(--font-display); font-size: 22px; font-weight: 800; }
+.tot span { font-size: 12px; color: var(--muted); }
+.stop { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; margin-bottom: 12px; overflow: hidden; }
+.stophead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.stophead b { font-family: var(--font-display); font-size: 18px; }
+.stophead small { display: block; color: var(--muted); font-size: 13px; }
+.time { font-family: var(--font-display); font-weight: 800; font-size: 18px; color: var(--accent); white-space: nowrap; }
+.pax { display: grid; grid-template-columns: 44px 1fr auto; gap: 10px; align-items: center; padding: 10px 14px; border-top: 1px solid var(--line); }
+.pax:first-of-type { border-top: 0; }
+.seat { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; font-size: 17px; }
+.on .seat { background: var(--good-soft); color: var(--good); }
+.off .seat { background: var(--line); color: var(--muted); }
+.name { font-weight: 700; }
+.meta { font-size: 13px; color: var(--muted); }
+.tag { display: inline-block; font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 999px; margin-top: 3px; }
+.tag.collect { background: var(--warn-soft); color: var(--warn); }
+.tag.paid { background: var(--good-soft); color: var(--good); }
+.call { text-decoration: none; background: var(--brand); color: #fff; border-radius: 10px; padding: 8px 12px; font-weight: 700; font-size: 14px; white-space: nowrap; }
+.label { font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; font-weight: 800; padding: 8px 14px 0; }
+.label.on { color: var(--good); } .label.off { color: var(--muted); }
+.empty, .msg { text-align: center; color: var(--muted); padding: 28px 12px; }
+.foot { text-align: center; font-size: 12.5px; color: var(--muted); margin-top: 16px; }
+button.refresh { font: inherit; border: 1.5px solid var(--brand); color: var(--brand); background: transparent; border-radius: 10px; padding: 7px 14px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="brand">CHRIS <em>LINER</em></div>
+  <h1 id="title">Passenger list</h1>
+  <div class="sub" id="sub">Loading…</div>
+  <div class="chips" id="chips"></div>
+</div></header>
+<main class="wrap">
+  <div id="out"><div class="msg">Loading the passenger list…</div></div>
+  <div class="foot"><span id="updated"></span><br><button class="refresh" id="refresh" type="button">Refresh now</button></div>
+</main>
+<script src="config.js"></script>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, attrs = {}, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) { if (v == null || v === false) continue; if (k === "class") n.className = v; else if (k === "text") n.textContent = v; else n.setAttribute(k, v); }
+    for (const c of kids) if (c != null) n.append(c);
+    return n;
+  };
+  const nad = (n) => "N$ " + Math.round(Number(n) || 0).toLocaleString("en-GB");
+  const tel = (p) => { let d = String(p || "").replace(/[^\d+]/g, ""); return d; };
+  const token = new URLSearchParams(location.search).get("t") || "";
+
+  function render(m) {
+    $("title").textContent = m.route + (m.buses > 1 ? ` · Bus ${m.bus}` : "");
+    $("sub").textContent = `${m.dateText} · departs ${m.stops[0].time} from ${m.stops[0].where}`;
+    const chips = [];
+    if (m.vehicle) chips.push([m.vehicle.name, m.vehicle.reg].filter(Boolean).join(" · "));
+    if (m.vehicle && m.vehicle.driver) chips.push("Driver " + m.vehicle.driver);
+    $("chips").replaceChildren(...chips.map((c) => el("span", { class: "chip", text: c })));
+    const P = m.passengers;
+    const collect = P.filter((p) => !p.paid).reduce((s, p) => s + p.fare, 0);
+    const out = $("out"); out.replaceChildren();
+    out.append(el("div", { class: "totals" },
+      el("div", { class: "tot" }, el("b", { text: String(P.length) }), el("span", { text: "Passengers" })),
+      el("div", { class: "tot" }, el("b", { text: String(P.filter((p) => !p.paid).length) }), el("span", { text: "Still to pay" })),
+      el("div", { class: "tot" }, el("b", { text: nad(collect) }), el("span", { text: "Cash to collect" }))));
+    if (!P.length) { out.append(el("div", { class: "empty", text: "No passengers are booked on this bus yet." })); return; }
+    m.stops.forEach((s, i) => {
+      const on = P.filter((p) => p.on === i), off = P.filter((p) => p.off === i);
+      if (!on.length && !off.length) return;
+      const box = el("section", { class: "stop" }, el("div", { class: "stophead" }, el("div", {}, el("b", { text: s.name }), s.where !== s.name ? el("small", { text: s.where.slice(s.name.length).replace(/^ \(|\)$/g, "") }) : null), el("span", { class: "time", text: s.time })));
+      if (off.length) { box.append(el("div", { class: "label off", text: `Getting off (${off.length})` })); for (const p of off) box.append(row(p, "off", m)); }
+      if (on.length) { box.append(el("div", { class: "label on", text: `Getting on (${on.length})` })); for (const p of on) box.append(row(p, "on", m)); }
+      out.append(box);
+    });
+  }
+  function row(p, kind, m) {
+    const info = kind === "on"
+      ? [`To ${m.stops[p.off].name}`, p.pickup ? `Pick-up: ${p.pickup}` : null, p.notes || null].filter(Boolean).join(" · ")
+      : `Got on at ${m.stops[p.on].name}`;
+    return el("div", { class: "pax " + kind },
+      el("div", { class: "seat", text: String(p.seat) }),
+      el("div", {}, el("div", { class: "name", text: p.name }), el("div", { class: "meta", text: info }),
+        kind === "on" ? el("span", { class: "tag " + (p.paid ? "paid" : "collect"), text: p.paid ? "Paid" : `Collect ${nad(p.fare)}` }) : null),
+      kind === "on" && tel(p.phone) ? el("a", { class: "call", href: "tel:" + tel(p.phone), text: "Call" }) : el("span"));
+  }
+  async function load() {
+    if (!/^[0-9a-f-]{36}$/.test(token)) { $("sub").textContent = ""; $("out").replaceChildren(el("div", { class: "msg", text: "This link is not complete. Open the link from your WhatsApp message again." })); return; }
+    try {
+      const r = await fetch(`${window.CL_CONFIG.url}/functions/v1/whatsapp?manifest=${token}`, { cache: "no-store" });
+      if (r.status === 404) { $("sub").textContent = ""; $("out").replaceChildren(el("div", { class: "msg", text: "This list is no longer available. Ask the office to send you a new link." })); return; }
+      if (!r.ok) throw new Error(r.status);
+      render(await r.json());
+      $("updated").textContent = "Updated " + new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) + ". Refreshes every 2 minutes.";
+    } catch (e) {
+      $("updated").textContent = "Couldn't refresh. Check your signal; the last list is still shown.";
+    }
+  }
+  $("refresh").addEventListener("click", load);
+  load(); setInterval(load, 120000);
+})();
+</script>
+</body>
+</html>

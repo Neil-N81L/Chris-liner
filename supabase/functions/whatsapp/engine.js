@@ -342,3 +342,14 @@ export function reconfirmBatches(rows, cfg) {
     ] };
   });
 }
+
+// Evening before travel: one "your trip is confirmed" message per passenger phone and booking, with the driver's name.
+// drivers maps bus number -> driver name for that date and direction ("dir|bus").
+export function tripDetailBatches(rows, cfg, drivers) {
+  return reconfirmBatches(rows, cfg).map((g) => {
+    const b = g.rows[0];
+    const driver = drivers[`${b.dir}|${b.bus_no || 1}`] || "to be confirmed";
+    const [name, date, stretch, seats, where, time, ref] = g.params;
+    return { ...g, params: [name, date, stretch, seats, where, time, driver, ref] };
+  });
+}
