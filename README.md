@@ -81,7 +81,7 @@ Only people on the `staff` list can see or change bookings. Under **Authenticati
 
 ## What is already running
 
-- **Supabase project:** `chris-liner` (in Neil-N81L's Org, London region, free plan). Its tables are `bookings`, `settings` (fares, stop times, payment text, buses per day), `wa_sessions` (where each chat is up to), `vehicles` (the fleet), `trips` (which buses run on a date and which vehicle each one is) and `staff` (who may log in to the staff site).
+- **Supabase project:** `chris-liner-oranjemund` (in Neil-N81L's Org, London region, free plan). Its tables are `bookings`, `settings` (fares, stop times, payment text, buses per day), `wa_sessions` (where each chat is up to), `vehicles` (the fleet), `trips` (which buses run on a date and which vehicle each one is) and `staff` (who may log in to the staff site).
 - **Scheduled jobs:** day-before messages at 17:00, driver lists and final trip details at 20:00, no-reply flags at 05:00 (pg_cron, Windhoek time). Before WhatsApp is connected, they do nothing.
 - **Webhook URL:** `https://vpkhuxzkgivcqcnxvkhd.supabase.co/functions/v1/whatsapp`
 - **Security:** the webhook refuses every message until the WhatsApp secrets below are set.
