@@ -961,7 +961,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
     $("tab-manifest").hidden = false; $("tab-fares").hidden = false;
     const { data } = await sb.from("settings").select("data").eq("id", 1).single();
     if (data) S.cfg = { ...DEFAULT_CFG, ...data.data };
-    if (S.cfg.placeholder !== false) notice("Some fares and times are still estimates. Confirmed prices: Lüderitz to Windhoek N$ 500, Rehoboth N$ 470, Mariental N$ 430, Keetmanshoop N$ 260. Set the rest under Fares & times.");
+    if (S.cfg.placeholder !== false) notice("Some fares and times are still estimates. Prices without a fixed price under Fares & times are worked out from the distance. Set the rest under Fares & times.");
     await loadVehicles();
     S.live = true; subscribe(); setView(location.hash.slice(1) || "book");
   }

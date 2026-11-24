@@ -137,7 +137,7 @@ Send "Hi" to the number from your own phone. While the app is in development mod
 
 The fares, stop times and payment text are placeholders in the `settings` table:
 
-- prices between stops (the price list under Fares & times; known so far: Lüderitz to Windhoek N$ 500, Rehoboth N$ 470, Mariental N$ 430, Keetmanshoop N$ 260)
+- prices between stops (the price list under Fares & times; known so far: Lüderitz to Windhoek N$ 500, Rehoboth N$ 470, Mariental N$ 430, Keetmanshoop N$ 260; Windhoek to Keetmanshoop N$ 300)
 - hours from Windhoek to each stop
 - minimum fare
 - departure time and departure point for each direction
