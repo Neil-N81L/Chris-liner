@@ -85,7 +85,7 @@ const STAFF_WORDS = new Set(["staff", "agent", "human", "person", "call me", "he
 
 // ---------- prompts per step ----------
 function menuMsg(cfg, name) {
-  return buttons(`Hi${name ? " " + name : ""}, welcome to *Chris Liner*. We run a daily bus between Windhoek and Oranjemund, Sunday to Friday, stopping at Rehoboth, Kalkrand, Mariental, Keetmanshoop, Aus and Rosh Pinah.\n\nWhat would you like to do?`,
+  return buttons(`Hi${name ? " " + name : ""}, welcome to *Chris Liner*. We run a bus between Windhoek and Oranjemund every day from Sunday to Friday, stopping at Rehoboth, Kalkrand, Mariental, Keetmanshoop, Aus and Rosh Pinah.\n\nWhat would you like to do?`,
     [["menu_book", "Book a seat"], ["menu_mine", "My bookings"], ["menu_staff", "Talk to staff"]]);
 }
 function dateRows(st, now) {

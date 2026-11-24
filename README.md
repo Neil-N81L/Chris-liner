@@ -82,8 +82,8 @@ Only people on the `staff` list can see or change bookings. Under **Authenticati
 ## What is already running
 
 - **Supabase project:** `chris-liner` (in Neil-N81L's Org, London region, free plan). Its tables are `bookings`, `settings` (fares, stop times, payment text, buses per day), `wa_sessions` (where each chat is up to), `vehicles` (the fleet), `trips` (which buses run on a date and which vehicle each one is) and `staff` (who may log in to the staff site).
-- **Scheduled jobs:** the reconfirmation runs daily (pg_cron). Before WhatsApp is connected, it does nothing.
-- **Webhook URL:** `https://dntpwkkkcfgrlderqgxt.supabase.co/functions/v1/whatsapp`
+- **Scheduled jobs:** day-before messages at 17:00, driver lists and final trip details at 20:00, no-reply flags at 05:00 (pg_cron, Windhoek time). Before WhatsApp is connected, they do nothing.
+- **Webhook URL:** `https://vpkhuxzkgivcqcnxvkhd.supabase.co/functions/v1/whatsapp`
 - **Security:** the webhook refuses every message until the WhatsApp secrets below are set.
 
 ## What you need to set up (about an hour)
@@ -111,7 +111,7 @@ Meta checks the number with an SMS or a call. The business display name ("Chris 
 
 ### 4. Secrets in Supabase
 
-In the Supabase dashboard, open project **chris-liner** > **Edge Functions** > **Secrets** and add:
+In the Supabase dashboard, open project **chris-liner-oranjemund** > **Edge Functions** > **Secrets** and add:
 
 | Name | Value |
 |---|---|
@@ -123,7 +123,7 @@ In the Supabase dashboard, open project **chris-liner** > **Edge Functions** > *
 ### 5. Connect the webhook
 
 1. In the Meta app, open **WhatsApp > Configuration > Webhook** and click **Edit**.
-2. For *Callback URL*, enter `https://dntpwkkkcfgrlderqgxt.supabase.co/functions/v1/whatsapp`.
+2. For *Callback URL*, enter `https://vpkhuxzkgivcqcnxvkhd.supabase.co/functions/v1/whatsapp`.
 3. For *Verify token*, enter the same phrase you set as `WHATSAPP_VERIFY_TOKEN`.
 4. Click **Verify and save**, then subscribe to the **messages** field.
 

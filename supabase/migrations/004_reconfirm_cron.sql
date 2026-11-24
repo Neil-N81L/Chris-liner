@@ -12,7 +12,7 @@ create or replace function public.run_bot_job(task text) returns void
 language sql security definer set search_path = public, extensions as $$
   with t as (insert into public.cron_tokens default values returning token)
   select net.http_post(
-    url := 'https://dntpwkkkcfgrlderqgxt.supabase.co/functions/v1/whatsapp?task=' || task,
+    url := 'https://vpkhuxzkgivcqcnxvkhd.supabase.co/functions/v1/whatsapp?task=' || task,
     headers := jsonb_build_object('Content-Type', 'application/json', 'x-cron-token', t.token::text),
     body := '{}'::jsonb
   ) from t;
