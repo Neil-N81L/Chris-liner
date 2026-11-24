@@ -1,7 +1,7 @@
-// Chris Liner WhatsApp booking bot: WhatsApp Cloud API webhook on Supabase Edge Functions.
+// GIBBZ Transport WhatsApp booking bot: WhatsApp Cloud API webhook on Supabase Edge Functions.
 // Secrets (Supabase dashboard > Edge Functions > Secrets):
 //   WHATSAPP_TOKEN            permanent access token of the Meta system user
-//   WHATSAPP_PHONE_NUMBER_ID  the Chris Liner number's Phone number ID in Meta
+//   WHATSAPP_PHONE_NUMBER_ID  the GIBBZ Transport number's Phone number ID in Meta
 //   WHATSAPP_VERIFY_TOKEN     any secret phrase; type the same phrase into Meta's webhook settings
 //   WHATSAPP_APP_SECRET       the Meta app's App Secret, used to check that requests come from Meta
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by Supabase automatically.
@@ -43,7 +43,7 @@ const deps = {
     throw error;
   },
   async answerReconfirm(ref: string, waId: string, yes: boolean) {
-    if (!/^CL-[A-Z0-9]{5}$/.test(ref)) return [];
+    if (!/^[A-Z]{2}-[A-Z0-9]{5}$/.test(ref)) return []; // e.g. GZ-7KQ2M
     const { data, error } = await db.from("bookings").select("id, ref, phone, wa_id, trip_date, dir, from_idx, seat")
       .eq("status", "confirmed").or(`ref.eq.${ref},ref.like.${ref}-%`);
     if (error) throw error;
@@ -276,7 +276,7 @@ Deno.serve(async (req) => {
         for (const m of replies) await send(waId, m);
       } catch (e) {
         console.error("message failed", e);
-        await send(msg.from, { kind: "text", body: "Sorry, something went wrong on our side. Please try again, or call 081 331 1175 / 081 295 7277." }).catch(() => {});
+        await send(msg.from, { kind: "text", body: "Sorry, something went wrong on our side. Please try again, or call 081 207 3832." }).catch(() => {});
       }
     }
   }

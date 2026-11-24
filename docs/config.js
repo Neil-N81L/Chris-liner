@@ -1,4 +1,4 @@
-// Public connection details for the Chris Liner Supabase project. These are safe to publish:
+// Public connection details for the Gibbz Transport Supabase project. These are safe to publish:
 // staff logins and the database's row-level security decide who can read or change bookings.
 window.CL_CONFIG = {
   url: "https://dntpwkkkcfgrlderqgxt.supabase.co",

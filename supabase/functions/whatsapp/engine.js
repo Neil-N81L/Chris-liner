@@ -1,12 +1,14 @@
-// Chris Liner WhatsApp booking conversation. Pure logic: no network or Deno APIs,
+// GIBBZ Transport WhatsApp booking conversation. Pure logic: no network or Deno APIs,
 // so it runs the same in the edge function and in the Node test simulator.
 
-export const STOPS = ["Windhoek", "Rehoboth", "Kalkrand", "Mariental", "Keetmanshoop", "Aus", "Rosh Pinah", "Oranjemund"];
+// Windhoek to Lüderitz on the B1 and B4. Direction codes stay WHK-OMD / OMD-WHK in the database: WHK-OMD means Windhoek -> Lüderitz.
+export const STOPS = ["Windhoek", "Rehoboth", "Kalkrand", "Mariental", "Keetmanshoop", "Aus", "Lüderitz"];
+const END = STOPS[STOPS.length - 1];
 export const SEATS = 13;
 // Toyota Quantum, back to front 4-3-3-2-2 with the driver in front: seat 1 beside the driver, 2-3, 4-6, 7-9, rear bench 10-13.
 export const DIRS = {
-  "WHK-OMD": { from: "Windhoek", to: "Oranjemund", label: "Windhoek → Oranjemund" },
-  "OMD-WHK": { from: "Oranjemund", to: "Windhoek", label: "Oranjemund → Windhoek" },
+  "WHK-OMD": { from: "Windhoek", to: "Lüderitz", label: "Windhoek → Lüderitz" },
+  "OMD-WHK": { from: "Lüderitz", to: "Windhoek", label: "Lüderitz → Windhoek" },
 };
 const TZ = "Africa/Windhoek";
 const IDLE_MS = 30 * 60 * 1000;
@@ -21,7 +23,7 @@ export const todayISO = (now) => new Intl.DateTimeFormat("en-CA", { timeZone: TZ
 const nowMinutes = (now) => { const [h, m] = new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(now).split(":").map(Number); return h * 60 + m; };
 const parseISO = (s) => { const [y, m, d] = s.split("-").map(Number); return new Date(Date.UTC(y, m - 1, d)); };
 const addDays = (s, n) => { const d = parseISO(s); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
-const isSaturday = (s) => parseISO(s).getUTCDay() === 6;
+const isSaturday = () => false; // the bus runs every day of the week
 const fmt = (s, o) => parseISO(s).toLocaleDateString("en-GB", { timeZone: "UTC", ...o });
 export const shortDate = (s) => fmt(s, { weekday: "short", day: "numeric", month: "short" });
 export const longDate = (s) => fmt(s, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
@@ -38,7 +40,7 @@ export function legFare(cfg, dir, a, b) {
 }
 export function stopMinutes(cfg, dir, i) {
   const r = route(dir); const H = cfg.hours || {};
-  const off = dir === "WHK-OMD" ? Number(H[r[i]]) || 0 : (Number(H.Oranjemund) || 0) - (Number(H[r[i]]) || 0);
+  const off = dir === "WHK-OMD" ? Number(H[r[i]]) || 0 : (Number(H[END]) || 0) - (Number(H[r[i]]) || 0);
   const [h, m] = ((cfg[dir] && cfg[dir].time) || "07:00").split(":").map(Number);
   return Math.round(h * 60 + m + off * 60);
 }
@@ -85,7 +87,7 @@ const STAFF_WORDS = new Set(["staff", "agent", "human", "person", "call me", "he
 
 // ---------- prompts per step ----------
 function menuMsg(cfg, name) {
-  return buttons(`Hi${name ? " " + name : ""}, welcome to *Chris Liner*. We run a daily bus between Windhoek and Oranjemund, Sunday to Friday, stopping at Rehoboth, Kalkrand, Mariental, Keetmanshoop, Aus and Rosh Pinah.\n\nWhat would you like to do?`,
+  return buttons(`Hi${name ? " " + name : ""}, welcome to *GIBBZ Transport*. Your journey, our priority. We run a bus between Windhoek and Lüderitz every day, stopping at Rehoboth, Kalkrand, Mariental, Keetmanshoop and Aus. Parcels are welcome too: send *staff* to arrange one.\n\nWhat would you like to do?`,
     [["menu_book", "Book a seat"], ["menu_mine", "My bookings"], ["menu_staff", "Talk to staff"]]);
 }
 function dateRows(st, now) {
@@ -103,8 +105,8 @@ const legLabel = (st) => `${route(st.dir)[st.from]} → ${route(st.dir)[st.to]}`
 
 function prompt(step, st, cfg, ctx) {
   switch (step) {
-    case "dir": return buttons("Which way are you travelling?", [["dir_WHK-OMD", "To Oranjemund"], ["dir_OMD-WHK", "To Windhoek"]]);
-    case "date": return list(`*${DIRS[st.dir].label}*\nWhich day do you want to travel? There is no bus on Saturdays.`, "Choose a day", dateRows(st, ctx.now));
+    case "dir": return buttons("Which way are you travelling?", [["dir_WHK-OMD", "To Lüderitz"], ["dir_OMD-WHK", "To Windhoek"]]);
+    case "date": return list(`*${DIRS[st.dir].label}*\nWhich day do you want to travel?`, "Choose a day", dateRows(st, ctx.now));
     case "from": return list(`*${shortDate(st.date)}*, ${DIRS[st.dir].label}\nWhere will you get on the bus?`, "Getting on at", fromRows(cfg, st));
     case "to": return list(`Getting on at *${route(st.dir)[st.from]}* (about ${stopTime(cfg, st.dir, st.from)}).\nWhere will you get off?`, "Getting off at", toRows(cfg, st));
     case "count": return list(`*${legLabel(st)}*, ${shortDate(st.date)}\nFare ${nad(legFare(cfg, st.dir, st.from, st.to))} per person. ${st.freeByBus.reduce((n, f) => n + f.length, 0)} seats are free.\n\nHow many people are travelling?`, "Number of people", countRows(st));
@@ -158,7 +160,7 @@ function nextAfterTo(st, cfg, ctx, deps) {
   })();
 }
 
-const randRef = (rng) => { const a = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s = "CL-"; for (let i = 0; i < 5; i++) s += a[Math.floor(rng() * a.length)]; return s; };
+const randRef = (rng) => { const a = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s = "GZ-"; for (let i = 0; i < 5; i++) s += a[Math.floor(rng() * a.length)]; return s; };
 
 // ---------- main entry ----------
 // input: { id?: string, text?: string, payload?: string }   ctx: { waId, profileName, now: Date, rng? }
@@ -201,7 +203,7 @@ export async function handle(input, ctx, deps) {
   if (CANCEL_WORDS.has(t) && st.step !== "menu") { st = { step: "menu" }; reply(text("No problem, nothing was booked.")); reply(menuMsg(cfg, ctx.profileName)); return save(); }
   if (STAFF_WORDS.has(t) || input.id === "menu_staff") {
     st = { step: "handoff" };
-    reply(text(`Thanks, one of our staff will reply in this chat. You can also call ${cfg.staffPhones || "081 331 1175 / 081 295 7277"}.\n\nTo use the booking assistant again, send *menu*.`));
+    reply(text(`Thanks, one of our staff will reply in this chat. You can also call ${cfg.staffPhones || "081 207 3832"}.\n\nTo use the booking assistant again, send *menu*.`));
     return save();
   }
   if (GREETINGS.has(t) || (st.step === "menu" && !input.id && t !== "book")) { st = { step: "menu" }; reply(menuMsg(cfg, ctx.profileName)); return save(); }
@@ -220,14 +222,14 @@ export async function handle(input, ctx, deps) {
       reply(menuMsg(cfg, ctx.profileName)); return save();
     }
     case "dir": {
-      const r = pick(input, [["dir_WHK-OMD", "To Oranjemund"], ["dir_OMD-WHK", "To Windhoek"]]) ||
-        (/^(w|from w)/.test(t) ? ["dir_WHK-OMD"] : /^(o|from o)/.test(t) ? ["dir_OMD-WHK"] : null);
+      const r = pick(input, [["dir_WHK-OMD", "To Lüderitz"], ["dir_OMD-WHK", "To Windhoek"]]) ||
+        (/^(w|from w)/.test(t) ? ["dir_WHK-OMD"] : /^(l|from l)/.test(t) ? ["dir_OMD-WHK"] : null);
       if (!r) return again("Please tap one of the two directions.");
       st.dir = r[0].slice(4); st.step = "date"; return again();
     }
     case "date": {
       const r = pick(input, dateRows(st, ctx.now));
-      if (!r) return again("Please choose a day from the list. There is no bus on Saturdays.");
+      if (!r) return again("Please choose a day from the list.");
       st.date = r[0].slice(5); st.step = "from"; return again();
     }
     case "from": {
@@ -305,7 +307,7 @@ export async function handle(input, ctx, deps) {
         ...st.seats.map((s, i) => `Seat ${s}: ${st.names[i]}${st.count > 1 ? ` (${base}-${i + 1})` : ""}`),
         `Total ${nad(fare * st.count)}.`, "",
         cfg.payment || "", "",
-        `Questions? Send *staff* or call ${cfg.staffPhones || "081 331 1175 / 081 295 7277"}.`,
+        `Questions? Send *staff* or call ${cfg.staffPhones || "081 207 3832"}.`,
       ];
       st = { step: "menu" };
       reply(text(done.filter((l, i, a) => !(l === "" && a[i - 1] === "")).join("\n")));
