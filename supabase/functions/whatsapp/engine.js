@@ -1,7 +1,7 @@
 // Chris Liner WhatsApp booking conversation. Pure logic: no network or Deno APIs,
 // so it runs the same in the edge function and in the Node test simulator.
 
-export const STOPS = ["Windhoek", "Rehoboth", "Mariental", "Keetmanshoop", "Aus", "Rosh Pinah", "Oranjemund"];
+export const STOPS = ["Windhoek", "Rehoboth", "Kalkrand", "Mariental", "Keetmanshoop", "Aus", "Rosh Pinah", "Oranjemund"];
 export const SEATS = 13;
 // Toyota Quantum, back to front 4-3-3-2-2 with the driver in front: seat 1 beside the driver, 2-3, 4-6, 7-9, rear bench 10-13.
 export const DIRS = {
@@ -28,8 +28,12 @@ export const longDate = (s) => fmt(s, { weekday: "long", day: "numeric", month: 
 export const nad = (n) => "N$ " + Math.round(Number(n) || 0).toLocaleString("en-GB");
 
 // ---------- fares and times (same rules as the staff app) ----------
+// A fixed price for the pair of stops wins (fareTable key: the two stop names in alphabetical order, joined by "|").
+export const pairKey = (x, y) => [x, y].sort().join("|");
 export function legFare(cfg, dir, a, b) {
   const r = route(dir); const F = cfg.fares || {};
+  const fixed = Number((cfg.fareTable || {})[pairKey(r[a], r[b])]);
+  if (fixed > 0) return fixed;
   return Math.max(Number(cfg.minFare) || 0, Math.round(Math.abs((Number(F[r[b]]) || 0) - (Number(F[r[a]]) || 0))));
 }
 export function stopMinutes(cfg, dir, i) {
@@ -40,6 +44,12 @@ export function stopMinutes(cfg, dir, i) {
 }
 export const stopTime = (cfg, dir, i) => { const t = ((stopMinutes(cfg, dir, i) % 1440) + 1440) % 1440; return `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`; };
 
+// Where passengers wait at a stop: the departure point at the start of the trip, otherwise the stop's pick-up point if staff set one.
+export function boardAt(cfg, dir, i) {
+  const stop = route(dir)[i];
+  const pt = i === 0 ? cfg[dir]?.point : cfg.stopPoints?.[stop];
+  return pt ? `${stop} (${pt})` : stop;
+}
 export const overlaps = (a, b) => a.from < b.to && b.from < a.to;
 export function freeSeats(taken, from, to, bus = 1) {
   const out = [];
@@ -75,7 +85,7 @@ const STAFF_WORDS = new Set(["staff", "agent", "human", "person", "call me", "he
 
 // ---------- prompts per step ----------
 function menuMsg(cfg, name) {
-  return buttons(`Hi${name ? " " + name : ""}, welcome to *Chris Liner*. We run a daily bus between Windhoek and Oranjemund, Sunday to Friday, stopping at Rehoboth, Mariental, Keetmanshoop, Aus and Rosh Pinah.\n\nWhat would you like to do?`,
+  return buttons(`Hi${name ? " " + name : ""}, welcome to *Chris Liner*. We run a daily bus between Windhoek and Oranjemund, Sunday to Friday, stopping at Rehoboth, Kalkrand, Mariental, Keetmanshoop, Aus and Rosh Pinah.\n\nWhat would you like to do?`,
     [["menu_book", "Book a seat"], ["menu_mine", "My bookings"], ["menu_staff", "Talk to staff"]]);
 }
 function dateRows(st, now) {
@@ -86,7 +96,7 @@ function dateRows(st, now) {
   }
   return rows;
 }
-const fromRows = (cfg, st) => route(st.dir).slice(0, -1).map((s, i) => [`from_${i}`, s, `Bus leaves about ${stopTime(cfg, st.dir, i)}`]);
+const fromRows = (cfg, st) => route(st.dir).slice(0, -1).map((s, i) => { const pt = i === 0 ? cfg[st.dir]?.point : cfg.stopPoints?.[s]; return [`from_${i}`, s, `Bus leaves about ${stopTime(cfg, st.dir, i)}${pt ? ` · ${pt}` : ""}`]; });
 const toRows = (cfg, st) => route(st.dir).map((s, i) => [`to_${i}`, s, `${nad(legFare(cfg, st.dir, st.from, i))} · arrives about ${stopTime(cfg, st.dir, i)}`]).slice(st.from + 1);
 const countRows = (st) => Array.from({ length: Math.min(MAX_PAX, st.maxFree) }, (_, i) => [`count_${i + 1}`, i === 0 ? "1 person" : `${i + 1} people`, ""]);
 const legLabel = (st) => `${route(st.dir)[st.from]} → ${route(st.dir)[st.to]}`;
@@ -112,7 +122,7 @@ function prompt(step, st, cfg, ctx) {
         `Trip: ${legLabel(st)}`,
         `Date: ${longDate(st.date)}`,
         ...(st.buses > 1 ? [`Bus: ${st.bus}`] : []),
-        `Board at: ${route(st.dir)[st.from]}${st.from === 0 && cfg[st.dir]?.point ? ` (${cfg[st.dir].point})` : ""}, about ${stopTime(cfg, st.dir, st.from)}`,
+        `Board at: ${boardAt(cfg, st.dir, st.from)}, about ${stopTime(cfg, st.dir, st.from)}`,
         ...st.seats.map((s, i) => `Seat ${s}: ${st.names[i]}`),
         `Cell: ${prettyPhone(st.phone)}`,
         `Fare: ${nad(fare * st.count)}${st.count > 1 ? ` (${st.count} × ${nad(fare)})` : ""}, paying by ${st.pay}`,
@@ -175,7 +185,7 @@ export async function handle(input, ctx, deps) {
     if (!rows.length) reply(text(`We couldn't find an active booking ${rc.ref} for this number. Send *staff* if you need help.`));
     else if (rc.yes) {
       const b = rows[0];
-      reply(text(`Thank you, your booking *${rc.ref}* stays confirmed. See you on ${shortDate(b.trip_date)} at ${route(b.dir)[b.from_idx]}, about ${stopTime(cfg, b.dir, b.from_idx)}.`));
+      reply(text(`Thank you, your booking *${rc.ref}* stays confirmed. See you on ${shortDate(b.trip_date)} at ${boardAt(cfg, b.dir, b.from_idx)}, about ${stopTime(cfg, b.dir, b.from_idx)}.`));
     } else reply(text(`Your booking *${rc.ref}* is cancelled and the seat${rows.length > 1 ? "s are" : " is"} released. Send *menu* if you want to book another day.`));
     return save();
   }
@@ -291,7 +301,7 @@ export async function handle(input, ctx, deps) {
       const done = [
         `✅ *Booked!* Reference *${base}*`, "",
         `${legLabel(st)}, ${longDate(st.date)}${st.buses > 1 ? `, Bus ${st.bus}` : ""}`,
-        `Be at ${route(st.dir)[st.from]}${st.from === 0 && cfg[st.dir]?.point ? ` (${cfg[st.dir].point})` : ""} by about ${stopTime(cfg, st.dir, st.from)}.`,
+        `Be at ${boardAt(cfg, st.dir, st.from)} by about ${stopTime(cfg, st.dir, st.from)}.`,
         ...st.seats.map((s, i) => `Seat ${s}: ${st.names[i]}${st.count > 1 ? ` (${base}-${i + 1})` : ""}`),
         `Total ${nad(fare * st.count)}.`, "",
         cfg.payment || "", "",
@@ -326,7 +336,7 @@ export function reconfirmBatches(rows, cfg) {
       longDate(b.trip_date),
       `${r[b.from_idx]} to ${r[b.to_idx]}`,
       g.rows.map((x) => x.seat).sort((x, y) => x - y).join(", ") + ((b.bus_no || 1) > 1 ? ` on Bus ${b.bus_no}` : ""),
-      r[b.from_idx],
+      boardAt(cfg, b.dir, b.from_idx),
       stopTime(cfg, b.dir, b.from_idx),
       g.ref,
     ] };

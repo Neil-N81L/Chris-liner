@@ -279,7 +279,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
       </div>
       <div class="phones num" aria-label="Booking phone numbers"><span>081 331 1175</span><span>081 295 7277</span><button id="signout" hidden>Sign out</button></div>
     </div>
-    <div class="routeline" aria-label="Route"><span><b>Windhoek</b></span><span>Rehoboth</span><span>Mariental</span><span>Keetmanshoop</span><span>Aus</span><span>Rosh Pinah</span><span><b>Oranjemund</b></span></div>
+    <div class="routeline" aria-label="Route"><span><b>Windhoek</b></span><span>Rehoboth</span><span>Kalkrand</span><span>Mariental</span><span>Keetmanshoop</span><span>Aus</span><span>Rosh Pinah</span><span><b>Oranjemund</b></span></div>
     <nav class="tabs" role="tablist">
       <button class="tab" role="tab" id="tab-book" data-view="book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>Book a seat</button>
       <button class="tab" role="tab" id="tab-manifest" data-view="manifest" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6M8 3h8v3H8z"/><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 11h8M8 15h5"/></svg>Manifest</button>
@@ -342,12 +342,12 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
   </section>
 
   <section id="view-fares" hidden>
-    <div class="panel" style="max-width:640px">
+    <div class="panel" style="max-width:860px">
       <h2 style="font-size:19px;margin-bottom:4px">Fares &amp; departure times</h2>
       <p class="hint" style="color:var(--muted);margin:0 0 16px">These show on every booking and confirmation message. The fare between two stops is the difference between their fares from Windhoek, and never less than the minimum fare. Staff only.</p>
       <form id="faresForm"></form>
     </div>
-    <div class="panel" style="max-width:640px;margin-top:16px">
+    <div class="panel" style="max-width:860px;margin-top:16px">
       <h2 style="font-size:19px;margin-bottom:4px">Buses &amp; fleet</h2>
       <p class="hint" style="color:var(--muted);margin:0 0 16px">How many buses run each way on a normal day, and the vehicles you can put on a trip. Add an extra bus for a single day from the Book a seat tab. When one bus is full for a customer's stops, the WhatsApp bot books them on the next bus.</p>
       <div id="fleetBox"></div>
@@ -368,8 +368,8 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
   const LAYOUT = [[null, 1, null, "D"], [null, null, 2, 3], [null, 4, 5, 6], [null, 7, 8, 9], [10, 11, 12, 13]];
   const FOLD = new Set();
   // Stops in Windhoek -> Oranjemund order (B1, B4, C13).
-  const STOPS = ["Windhoek", "Rehoboth", "Mariental", "Keetmanshoop", "Aus", "Rosh Pinah", "Oranjemund"];
-  const ABBR = { Windhoek: "WHK", Rehoboth: "REH", Mariental: "MAR", Keetmanshoop: "KMP", Aus: "AUS", "Rosh Pinah": "RSP", Oranjemund: "OMD" };
+  const STOPS = ["Windhoek", "Rehoboth", "Kalkrand", "Mariental", "Keetmanshoop", "Aus", "Rosh Pinah", "Oranjemund"];
+  const ABBR = { Windhoek: "WHK", Rehoboth: "REH", Kalkrand: "KAL", Mariental: "MAR", Keetmanshoop: "KMP", Aus: "AUS", "Rosh Pinah": "RSP", Oranjemund: "OMD" };
   const DIRS = {
     "WHK-OMD": { from: "Windhoek", to: "Oranjemund" },
     "OMD-WHK": { from: "Oranjemund", to: "Windhoek" },
@@ -377,8 +377,8 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
   const route = (dir) => (dir === "WHK-OMD" ? STOPS.slice() : STOPS.slice().reverse());
   // Placeholders until the operator saves real values under "Fares & times".
   const DEFAULT_CFG = {
-    fares: { Windhoek: 0, Rehoboth: 100, Mariental: 250, Keetmanshoop: 400, Aus: 500, "Rosh Pinah": 550, Oranjemund: 600 },
-    hours: { Windhoek: 0, Rehoboth: 1, Mariental: 3.25, Keetmanshoop: 5.5, Aus: 8, "Rosh Pinah": 10, Oranjemund: 11 },
+    fares: { Windhoek: 0, Rehoboth: 100, Kalkrand: 200, Mariental: 250, Keetmanshoop: 400, Aus: 500, "Rosh Pinah": 550, Oranjemund: 600 },
+    hours: { Windhoek: 0, Rehoboth: 1, Kalkrand: 2.25, Mariental: 3.25, Keetmanshoop: 5.5, Aus: 8, "Rosh Pinah": 10, Oranjemund: 11 },
     minFare: 100,
     "WHK-OMD": { time: "07:00", point: "Windhoek (pick-up point to be confirmed)" },
     "OMD-WHK": { time: "07:00", point: "Oranjemund (pick-up point to be confirmed)" },
@@ -427,8 +427,13 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
   const cfg = () => S.cfg;
   const dirCfg = (dir) => ({ ...DEFAULT_CFG[dir], ...(S.cfg[dir] || {}) });
   const stopName = (dir, i) => route(dir)[i];
+  // Where passengers wait: the departure point at the start of the trip, otherwise the stop's pick-up point.
+  const pointAt = (dir, i) => (i === 0 ? dirCfg(dir).point : (cfg().stopPoints || {})[route(dir)[i]]) || "";
+  const pairKey = (x, y) => [x, y].sort().join("|");
   function legFare(dir, a, b) {
     const r = route(dir); const F = { ...DEFAULT_CFG.fares, ...(cfg().fares || {}) };
+    const fixed = Number((cfg().fareTable || {})[pairKey(r[a], r[b])]);
+    if (fixed > 0) return fixed;
     const v = Math.abs((Number(F[r[b]]) || 0) - (Number(F[r[a]]) || 0));
     return Math.max(Number(cfg().minFare) || 0, Math.round(v));
   }
@@ -541,7 +546,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
   function kv(k, v) { return el("div", { class: "kv" }, el("span", { text: k }), el("b", { class: "num", text: v })); }
   function confirmText(b) {
     const c = dirCfg(b.dir);
-    const where = b.from === 0 ? c.point : stopName(b.dir, b.from);
+    const pt = pointAt(b.dir, b.from); const where = stopName(b.dir, b.from) + (pt ? ` (${pt})` : "");
     return `Chris Liner booking ${b.ref}\n${legText(b.dir, b.from, b.to)}, ${longDate(b.date)}\nBoards about ${stopTime(b.dir, b.from)} at ${where}\n${S.buses > 1 ? busName(b.bus) + ", s" : "S"}eat ${b.seat} for ${b.name}\nFare ${nad(b.fare)}${b.paid ? " (paid)" : " (pay before departure)"}\nQueries: ${PHONES}`;
   }
   function renderTicket(b, opts = {}) {
@@ -550,7 +555,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
         el("span", { class: "pill " + (b.paid ? "paid" : "unpaid"), text: b.paid ? `Paid · ${b.method || "Cash"}` : "Not paid" })),
       el("div", { class: "body" },
         kv("Passenger", b.name), kv("Phone", b.phone), kv("Seat", S.buses > 1 ? `${b.seat} · ${busName(b.bus)}` : String(b.seat)), kv("Fare", nad(b.fare)),
-        kv("Gets on", `${stopName(b.dir, b.from)} · ${stopTime(b.dir, b.from)}`), kv("Gets off", `${stopName(b.dir, b.to)} · ${stopTime(b.dir, b.to)}`), kv("Date", shortDate(b.date)),
+        kv("Gets on", `${stopName(b.dir, b.from)}${pointAt(b.dir, b.from) ? " (" + pointAt(b.dir, b.from) + ")" : ""} · ${stopTime(b.dir, b.from)}`), kv("Gets off", `${stopName(b.dir, b.to)} · ${stopTime(b.dir, b.to)}`), kv("Date", shortDate(b.date)),
         b.pickup ? kv("Pick-up spot", b.pickup) : null),
       el("div", { class: "foot actions" },
         waNumber(b.phone) ? el("a", { class: "btn wa sm", href: waLink(b.phone, confirmText(b)), target: "_blank", rel: "noopener", text: "Send on WhatsApp" }) : null,
@@ -633,7 +638,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
       el("div", { class: "two" },
         el("div", { class: "field" }, el("label", { for: "fPhone", text: "Cell number" }), el("input", { type: "tel", id: "fPhone", name: "phone", required: true, placeholder: "081 234 5678", inputmode: "tel" })),
         el("div", { class: "field" }, el("label", { for: "fFare", text: "Fare (N$)" }), el("input", { type: "number", id: "fFare", name: "fare", min: "0", step: "10", value: String(fare) }))),
-      el("div", { class: "field" }, el("label", { for: "fPickup", text: "Pick-up spot" }), el("input", { type: "text", id: "fPickup", name: "pickup", placeholder: `e.g. Engen garage, ${stopName(S.dir, S.from)}` })),
+      el("div", { class: "field" }, el("label", { for: "fPickup", text: "Pick-up spot" }), el("input", { type: "text", id: "fPickup", name: "pickup", placeholder: pointAt(S.dir, S.from) ? `Usual spot: ${pointAt(S.dir, S.from)}` : `e.g. Engen garage, ${stopName(S.dir, S.from)}` })),
       el("div", { class: "two" },
         el("label", { class: "check" }, el("input", { type: "checkbox", id: "fPaid", name: "paid" }), "Paid already"),
         el("div", { class: "field" }, el("label", { for: "fMethod", text: "Paid by" }), el("select", { id: "fMethod", name: "method" }, ...["Cash", "EFT", "eWallet / Blue Wallet", "Card"].map((m) => el("option", { text: m }))))),
@@ -710,6 +715,25 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
   $("manSearch").addEventListener("input", () => renderManifest());
 
   // ---------- fares ----------
+  // Fixed prices between two stops (both directions). These win over the "fare from Windhoek" difference.
+  function priceList() {
+    const body = el("tbody", { id: "priceRows" });
+    const stopSel = (v, label) => el("select", { "aria-label": label }, ...STOPS.map((s) => el("option", { value: s, selected: s === v, text: s })));
+    const row = (a, b, v) => {
+      const tr = el("tr", {}, el("td", {}, stopSel(a, "From")), el("td", {}, stopSel(b, "To")),
+        el("td", {}, el("input", { type: "number", min: "0", step: "10", value: v ? String(v) : "", placeholder: "N$", "aria-label": "Price (N$)" })),
+        el("td", {}, el("button", { class: "btn danger sm", type: "button", text: "Remove", onclick: () => tr.remove() })));
+      return tr;
+    };
+    const entries = Object.entries(cfg().fareTable || {}).map(([k, v]) => [...k.split("|"), v])
+      .sort((x, y) => STOPS.indexOf(y[0]) + STOPS.indexOf(y[1]) - STOPS.indexOf(x[0]) - STOPS.indexOf(x[1]));
+    for (const [a, b, v] of entries) body.append(row(b === "Oranjemund" || b === "Rosh Pinah" ? b : a, b === "Oranjemund" || b === "Rosh Pinah" ? a : b, v));
+    return el("div", { class: "field" },
+      el("div", { style: "font-weight:600;font-size:13px", text: "Price list (same price both ways)" }),
+      el("div", { class: "hint", text: "These prices are used exactly. Trips not on this list use the fares from Windhoek above." }),
+      el("div", { style: "overflow-x:auto" }, el("table", { class: "faretable" }, el("thead", {}, el("tr", {}, el("th", { text: "From" }), el("th", { text: "To" }), el("th", { text: "Price (N$)" }), el("th"))), body)),
+      el("div", {}, el("button", { class: "btn ghost sm", type: "button", text: "+ Add price", onclick: () => body.append(row("Oranjemund", "Windhoek", "")) })));
+  }
   function renderFares() {
     const f = $("faresForm"); f.replaceChildren();
     const F = { ...DEFAULT_CFG.fares, ...(cfg().fares || {}) }; const H = { ...DEFAULT_CFG.hours, ...(cfg().hours || {}) };
@@ -725,9 +749,11 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
     const tb = el("tbody");
     STOPS.forEach((s, i) => tb.append(el("tr", {}, el("td", { style: "font-weight:600", text: s }),
       el("td", {}, i === 0 ? el("span", { class: "num", style: "color:var(--muted)", text: "Start" }) : el("input", { type: "number", id: `sf-${i}`, min: "0", step: "10", value: String(F[s]), "aria-label": `Fare from Windhoek to ${s}` })),
-      el("td", {}, i === 0 ? el("span", { class: "num", style: "color:var(--muted)", text: "0" }) : el("input", { type: "number", id: `sh-${i}`, min: "0", step: "0.25", value: String(H[s]), "aria-label": `Hours from Windhoek to ${s}` })))));
+      el("td", {}, i === 0 ? el("span", { class: "num", style: "color:var(--muted)", text: "0" }) : el("input", { type: "number", id: `sh-${i}`, min: "0", step: "0.25", value: String(H[s]), "aria-label": `Hours from Windhoek to ${s}` })),
+      el("td", {}, i === 0 || i === STOPS.length - 1 ? el("span", { style: "color:var(--muted);font-size:13px", text: "Departure point above" }) : el("input", { type: "text", id: `sp-${i}`, value: (cfg().stopPoints || {})[s] || "", placeholder: "e.g. Engen garage", "aria-label": `Pick-up point in ${s}` })))));
     f.append(el("div", { class: "field" }, el("div", { style: "font-weight:600;font-size:13px", text: "Stops along the route" }),
-      el("div", { style: "overflow-x:auto" }, el("table", { class: "faretable" }, el("thead", {}, el("tr", {}, el("th", { text: "Stop" }), el("th", { text: "Fare from Windhoek (N$)" }), el("th", { text: "Hours from Windhoek" }))), tb))),
+      el("div", { style: "overflow-x:auto" }, el("table", { class: "faretable" }, el("thead", {}, el("tr", {}, el("th", { text: "Stop" }), el("th", { text: "Fare from Windhoek (N$)" }), el("th", { text: "Hours from Windhoek" }), el("th", { text: "Pick-up point" }))), tb))),
+      priceList(),
       el("div", { class: "field", style: "max-width:220px" }, el("label", { for: "minFare", text: "Minimum fare (N$)" }), el("input", { type: "number", id: "minFare", min: "0", step: "10", value: String(cfg().minFare ?? DEFAULT_CFG.minFare) })),
       el("div", { class: "field" }, el("label", { for: "payNote", text: "Payment instructions (sent with every WhatsApp booking)" }), el("textarea", { id: "payNote" }, cfg().payment || "")),
       el("div", { class: "actions" }, el("button", { class: "btn", type: "submit", text: "Save fares and times" })));
@@ -735,6 +761,12 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
       e.preventDefault();
       const next = { fares: { Windhoek: 0 }, hours: { Windhoek: 0 }, minFare: Number($("minFare").value) || 0, placeholder: false, updatedAt: new Date().toISOString() };
       STOPS.forEach((s, i) => { if (i) { next.fares[s] = Number($(`sf-${i}`).value) || 0; next.hours[s] = Number($(`sh-${i}`).value) || 0; } });
+      next.fareTable = {};
+      for (const tr of document.querySelectorAll("#priceRows tr")) {
+        const [a, b] = [...tr.querySelectorAll("select")].map((x) => x.value); const v = Number(tr.querySelector("input").value);
+        if (a && b && a !== b && v > 0) next.fareTable[pairKey(a, b)] = v;
+      }
+      next.stopPoints = {}; STOPS.forEach((s, i) => { const el2 = $(`sp-${i}`); if (el2 && el2.value.trim()) next.stopPoints[s] = el2.value.trim(); });
       for (const k of Object.keys(DIRS)) next[k] = { time: $(`time-${k}`).value || "07:00", point: $(`point-${k}`).value.trim() };
       next.payment = $("payNote").value.trim();
       next.busesPerDay = Object.fromEntries(Object.keys(DIRS).map((k) => [k, Math.min(6, Math.max(1, Math.round(Number($(`nbus-${k}`).value) || 1)))]));
