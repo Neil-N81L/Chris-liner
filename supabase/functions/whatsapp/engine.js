@@ -101,6 +101,9 @@ function dateRows(st, now) {
 const fromRows = (cfg, st) => route(st.dir).slice(0, -1).map((s, i) => { const pt = i === 0 ? cfg[st.dir]?.point : cfg.stopPoints?.[s]; return [`from_${i}`, s, `Bus leaves about ${stopTime(cfg, st.dir, i)}${pt ? ` · ${pt}` : ""}`]; });
 const toRows = (cfg, st) => route(st.dir).map((s, i) => [`to_${i}`, s, `${nad(legFare(cfg, st.dir, st.from, i))} · arrives about ${stopTime(cfg, st.dir, i)}`]).slice(st.from + 1);
 const countRows = (st) => Array.from({ length: Math.min(MAX_PAX, st.maxFree) }, (_, i) => [`count_${i + 1}`, i === 0 ? "1 person" : `${i + 1} people`, ""]);
+// Payment: cash on the bus, EFT, or a mobile wallet (eWallet, BlueWallet, NedWallet). WhatsApp allows 3 buttons of up to 20 characters.
+const PAY_BTNS = [["pay_Cash", "Cash on the bus"], ["pay_EFT", "EFT"], ["pay_Wallet", "e/Blue/NedWallet"]];
+const PAY_LABEL = { pay_Cash: "cash", pay_EFT: "EFT", pay_eWallet: "eWallet, BlueWallet or NedWallet", pay_Wallet: "eWallet, BlueWallet or NedWallet" };
 const legLabel = (st) => `${route(st.dir)[st.from]} → ${route(st.dir)[st.to]}`;
 
 function prompt(step, st, cfg, ctx) {
@@ -116,7 +119,7 @@ function prompt(step, st, cfg, ctx) {
     }
     case "names": return text(st.count > 1 ? `What is the full name of passenger ${st.names.length + 1} of ${st.count} (seat ${st.seats[st.names.length]}), as on their ID?` : "What is the passenger's full name, as on their ID?");
     case "phone": return buttons(`Which cell number should we use for this booking?\n\nTap below to use ${prettyPhone(localPhone(ctx.waId))}, or type another number.`, [["phone_same", "Use this number"]]);
-    case "pay": return buttons(`How will you pay the ${nad(legFare(cfg, st.dir, st.from, st.to) * st.count)}?`, [["pay_Cash", "Cash on the bus"], ["pay_EFT", "EFT"], ["pay_eWallet", "eWallet"]]);
+    case "pay": return buttons(`How will you pay the ${nad(legFare(cfg, st.dir, st.from, st.to) * st.count)}?\n\nYou can pay cash on the bus, by EFT, or with eWallet, BlueWallet or NedWallet.`, PAY_BTNS);
     case "confirm": {
       const fare = legFare(cfg, st.dir, st.from, st.to);
       const lines = [
@@ -280,9 +283,9 @@ export async function handle(input, ctx, deps) {
       st.step = "pay"; return again();
     }
     case "pay": {
-      const r = pick(input, [["pay_Cash", "Cash on the bus"], ["pay_EFT", "EFT"], ["pay_eWallet", "eWallet"]]) || (/cash/.test(t) ? ["pay_Cash"] : /eft|bank/.test(t) ? ["pay_EFT"] : /wallet|ewallet|blue/.test(t) ? ["pay_eWallet"] : null);
+      const r = pick(input, PAY_BTNS) || (/cash/.test(t) ? ["pay_Cash"] : /eft|bank|transfer/.test(t) ? ["pay_EFT"] : /wallet|blue|ned|e-?wallet/.test(t) ? ["pay_Wallet"] : null);
       if (!r) return again("Please tap how you will pay.");
-      st.pay = r[0].slice(4); st.step = "confirm"; return again();
+      st.pay = PAY_LABEL[r[0]] || "cash"; st.step = "confirm"; return again();
     }
     case "confirm": {
       if (input.id === "confirm_restart" || /^start/.test(t)) { st = { step: "dir" }; return again(); }

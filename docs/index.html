@@ -645,7 +645,7 @@ td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px;
       el("div", { class: "field" }, el("label", { for: "fPickup", text: "Pick-up spot" }), el("input", { type: "text", id: "fPickup", name: "pickup", placeholder: pointAt(S.dir, S.from) ? `Usual spot: ${pointAt(S.dir, S.from)}` : `e.g. Engen garage, ${stopName(S.dir, S.from)}` })),
       el("div", { class: "two" },
         el("label", { class: "check" }, el("input", { type: "checkbox", id: "fPaid", name: "paid" }), "Paid already"),
-        el("div", { class: "field" }, el("label", { for: "fMethod", text: "Paid by" }), el("select", { id: "fMethod", name: "method" }, ...["Cash", "EFT", "eWallet / Blue Wallet", "Card"].map((m) => el("option", { text: m }))))),
+        el("div", { class: "field" }, el("label", { for: "fMethod", text: "Paid by" }), el("select", { id: "fMethod", name: "method" }, ...["Cash", "EFT", "eWallet", "BlueWallet", "NedWallet"].map((m) => el("option", { text: m }))))),
       el("div", { class: "field" }, el("label", { for: "fNotes", text: "Notes" }), el("textarea", { id: "fNotes", name: "notes", placeholder: "Luggage, child on lap, special needs…" })),
       S.error ? el("div", { class: "err", role: "alert", text: S.error }) : null,
       el("div", { class: "actions" }, el("button", { class: "btn", type: "submit", disabled: S.busy, text: S.busy ? "Booking…" : `Book seat ${S.selected}` }),

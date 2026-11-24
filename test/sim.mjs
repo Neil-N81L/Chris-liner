@@ -58,5 +58,5 @@ await say(g.to, { text: "Yes, keep it", payload: `rc_yes:${g.ref}` });
 settings.busesPerDay = { "WHK-OMD": 2, "OMD-WHK": 1 };
 for (let seat = 1; seat <= 12; seat++) bookings.push({ ref: "CL-FULL" + seat, trip_date: "2026-11-25", dir: "WHK-OMD", bus_no: 1, seat, from_idx: 0, to_idx: 6, status: "confirmed", phone: "0810000000", name: "X Y" });
 const C = "264819998888";
-for (const inp of [{ text: "book" }, { id: "dir_WHK-OMD" }, { id: "date_2026-11-25" }, { id: "from_0" }, { id: "to_6" }, { id: "count_2" }, { id: "seats_any" }, { text: "Anna Smith" }, { text: "Ben Smith" }, { id: "phone_same" }, { id: "pay_Cash" }, { id: "confirm_yes" }]) await say(C, inp);
+for (const inp of [{ text: "book" }, { id: "dir_WHK-OMD" }, { id: "date_2026-11-25" }, { id: "from_0" }, { id: "to_6" }, { id: "count_2" }, { id: "seats_any" }, { text: "Anna Smith" }, { text: "Ben Smith" }, { id: "phone_same" }, { id: "pay_Wallet" }, { id: "confirm_yes" }]) await say(C, inp);
 console.log(bookings.filter((b) => b.wa_id === C).map((b) => `${b.ref} bus${b.bus_no} seat${b.seat}`));
