@@ -48,7 +48,7 @@ Each driver gets their bus's passenger list on WhatsApp, with a link to a live p
   - **Name:** `driver_manifest`
   - **Language:** English (`en`)
   - **Body:** `Hi {{1}}, your GIBBZ Transport passenger list for {{2}}, {{3}}, is ready: {{4}} passengers booked so far. Tap below to open it. The list updates itself if bookings change.`
-  - **Button:** *Visit website*, type *Dynamic*, URL `https://neil-n81l.github.io/Chris-liner/driver.html?t={{1}}`, button text `Open passenger list`
+  - **Button:** *Visit website*, type *Dynamic*, URL `https://neil-n81l.github.io/gibbz-transport/driver.html?t={{1}}`, button text `Open passenger list`
 
 A driver's link only works for their own bus and stops working two days after the trip.
 
