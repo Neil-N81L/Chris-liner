@@ -100,7 +100,7 @@ async function sendTemplate(to: string, params: string[], ref: string) {
 
 // ---------- driver manifest ----------
 // Each bus on a trip has a secret manifest_token (trips table). The driver's link opens docs/driver.html, which reads this JSON.
-const MANIFEST_PAGE = env("MANIFEST_PAGE_URL") || "https://neil-n81l.github.io/Chris-liner/driver.html";
+const MANIFEST_PAGE = env("MANIFEST_PAGE_URL") || "https://neil-n81l.github.io/Chris-liner-Bookings/driver.html";
 async function manifestJSON(token: string) {
   const { data: trip } = await db.from("trips").select("trip_date, dir, bus_no, vehicle_id").eq("manifest_token", token).maybeSingle();
   if (!trip || trip.trip_date < todayISO(new Date(Date.now() - 2 * 86400000))) return null; // links stop working two days after the trip
