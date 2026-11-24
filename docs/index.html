@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chris Liner Staff</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: blue route band on top, then a two-column booking desk (van seat map | ticket form) that stacks on phones. */
+:root {
+  --bg: #f3f6fb;
+  --surface: #ffffff;
+  --ink: #12203a;
+  --muted: #5a6680;
+  --line: #d9e0ec;
+  --brand: #1c4f93;
+  --brand-ink: #ffffff;
+  --brand-soft: #e3ecf8;
+  --sand: #c99a52;
+  --sand-soft: #f6ecdc;
+  --taken: #c8d0dd;
+  --good: #1f7a4d;
+  --good-soft: #e1f2e8;
+  --warn: #a5541b;
+  --warn-soft: #fbeadc;
+  --bad: #b3261e;
+  --band: #0f2a50;
+  --font-display: "Archivo", "Arial Narrow", Arial, sans-serif;
+  --font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c1424; --surface: #141f33; --ink: #e8eef8; --muted: #9aa8c0; --line: #273650;
+    --brand: #6f9fe6; --brand-ink: #0c1424; --brand-soft: #1b2d4c; --sand: #e0b46c; --sand-soft: #3a2f1c;
+    --taken: #34425c; --good: #5cc28d; --good-soft: #15352a; --warn: #eda06a; --warn-soft: #3d2818; --bad: #f08a80;
+    --band: #091327; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c1424; --surface: #141f33; --ink: #e8eef8; --muted: #9aa8c0; --line: #273650;
+  --brand: #6f9fe6; --brand-ink: #0c1424; --brand-soft: #1b2d4c; --sand: #e0b46c; --sand-soft: #3a2f1c;
+  --taken: #34425c; --good: #5cc28d; --good-soft: #15352a; --warn: #eda06a; --warn-soft: #3d2818; --bad: #f08a80;
+  --band: #091327; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--sand); outline-offset: 2px; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* Header band */
+.hero { background: var(--band); color: #fff; margin-top: calc(-1 * env(safe-area-inset-top, 0px)); padding-top: calc(env(safe-area-inset-top, 0px) + 22px); padding-bottom: 0; }
+.hero .wrap { display: flex; flex-direction: column; gap: 14px; }
+.brandrow { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: space-between; }
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo svg { width: 46px; height: 30px; flex: none; }
+.wordmark { font-family: var(--font-display); font-weight: 900; font-stretch: 118%; font-size: clamp(24px, 4.5vw, 34px); letter-spacing: 0.01em; line-height: 1; }
+.tagline { font-size: 13px; color: #b9c9e4; letter-spacing: 0.02em; }
+.phones { display: flex; gap: 8px; flex-wrap: wrap; font-size: 13px; }
+.phones span { border: 1px solid rgba(255,255,255,.28); border-radius: 999px; padding: 4px 10px; white-space: nowrap; }
+.tabs { display: flex; gap: 4px; overflow-x: auto; }
+.tab { background: transparent; border: 0; color: #c7d5ec; padding: 10px 14px 12px; font-weight: 600; border-radius: 8px 8px 0 0; white-space: nowrap; }
+.tab[aria-selected="true"] { background: var(--bg); color: var(--ink); }
+.tab[hidden] { display: none; }
+
+main { padding-block: 22px 48px; }
+.notice { border-radius: 10px; padding: 10px 14px; font-size: 14px; background: var(--sand-soft); color: var(--ink); border: 1px solid var(--sand); margin-bottom: 18px; }
+
+/* Trip picker */
+.trip { display: grid; gap: 14px; margin-bottom: 20px; }
+.dirs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-width: 560px; }
+.dir { background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 14px; text-align: left; display: flex; flex-direction: column; gap: 2px; }
+.dir b { font-family: var(--font-display); font-stretch: 108%; font-size: 16px; }
+.dir small { color: var(--muted); font-size: 12.5px; }
+.dir[aria-pressed="true"] { border-color: var(--brand); background: var(--brand-soft); }
+.days { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
+.day { flex: none; width: 64px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 10px; padding: 6px 4px; text-align: center; display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
+.day .dw { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.day .dd { font-family: var(--font-display); font-weight: 800; font-size: 20px; }
+.day .dm { font-size: 11px; color: var(--muted); }
+.day[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.day[aria-pressed="true"] .dw, .day[aria-pressed="true"] .dm { color: var(--brand-ink); opacity: .85; }
+.day:disabled { opacity: .45; cursor: not-allowed; border-style: dashed; }
+.buses { display: flex; gap: 8px; flex-wrap: wrap; align-items: stretch; }
+.bus { background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 8px 12px; text-align: left; display: flex; flex-direction: column; gap: 1px; min-width: 120px; }
+.bus b { font-family: var(--font-display); font-size: 15px; }
+.bus small { color: var(--muted); font-size: 12px; }
+.bus[aria-pressed="true"] { border-color: var(--brand); background: var(--brand-soft); }
+.bus.add { border-style: dashed; justify-content: center; color: var(--brand); font-weight: 600; }
+.busveh { display: flex; gap: 8px; align-items: end; flex-wrap: wrap; }
+.busveh .field { min-width: 200px; }
+.fleet { width: 100%; border-collapse: collapse; }
+.fleet td, .fleet th { padding: 4px 6px 4px 0; text-align: left; font-size: 13px; }
+.fleet input[type=text] { width: 100%; }
+
+/* Desk */
+.desk { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 760px) { .desk { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; min-width: 0; }
+.eyebrow { font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.triphead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.triphead h2 { font-size: 19px; font-stretch: 105%; }
+.count { font-size: 13px; color: var(--muted); }
+
+/* Van */
+.van { position: relative; border: 2.5px solid var(--ink); border-radius: 46px 46px 18px 18px; padding: 26px 16px 16px; max-width: 320px; margin: 0 auto; }
+.van::before { content: ""; position: absolute; left: 22px; right: 22px; top: 8px; height: 8px; border-radius: 8px; background: var(--line); }
+.seat.fold { border-radius: 6px; border-style: dashed; }
+.row.rear { margin-top: 16px; padding-top: 12px; border-top: 1.5px dashed var(--line); }
+.door { position: absolute; left: -2.5px; top: 98px; height: 170px; width: 5px; background: var(--sand); border-radius: 2px; }
+.doorlbl { position: absolute; left: -16px; top: 170px; transform: rotate(-90deg); font-size: 10px; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
+.row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+.row.front { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1.5px dashed var(--line); }
+.seat { aspect-ratio: 1 / 1.05; max-width: 100%; border-radius: 10px 10px 6px 6px; border: 1.5px solid var(--brand); background: var(--surface); color: var(--brand); font-weight: 700; font-family: var(--font-display); font-size: 17px; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.05; position: relative; padding: 2px; overflow: hidden; }
+.seat small { font-family: var(--font-body); font-size: 9.5px; font-weight: 600; color: var(--muted); max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.seat:hover:not(:disabled):not(.sel) { background: var(--brand-soft); }
+.seat.taken { background: var(--taken); border-color: var(--taken); color: var(--muted); cursor: not-allowed; }
+.seat.taken.staff { cursor: pointer; }
+.seat.paid { box-shadow: inset 0 -4px 0 var(--good); }
+.seat.sel { background: var(--brand); color: var(--brand-ink); }
+.seat.sel small { color: var(--brand-ink); }
+.seat.driver { border: 1.5px dashed var(--line); color: var(--muted); font-size: 10px; font-family: var(--font-body); font-weight: 600; cursor: default; background: transparent; }
+.seat.driver svg { width: 26px; height: 26px; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); margin-top: 14px; justify-content: center; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; border: 1.5px solid var(--brand); }
+.legend .lt { background: var(--taken); border-color: var(--taken); }
+.legend .ls { background: var(--brand); }
+.legend .lp { background: repeating-linear-gradient(135deg, var(--surface) 0 4px, var(--taken) 4px 7px); }
+.seat.partial { background: repeating-linear-gradient(135deg, var(--surface) 0 6px, var(--brand-soft) 6px 10px); }
+.seat.partial small { color: var(--brand); }
+.legs { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto; gap: 10px; align-items: end; max-width: 720px; }
+.legs .arrow { padding-bottom: 10px; color: var(--muted); font-weight: 700; }
+.legs .fare { padding-bottom: 8px; font-family: var(--font-display); font-weight: 800; font-size: 18px; white-space: nowrap; }
+@media (max-width: 560px) { .legs { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .legs .arrow { display: none; } .legs .fare { grid-column: 1 / -1; padding: 0; } }
+.stopboard { display: flex; gap: 0; overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 16px; padding: 14px 6px 12px; }
+.stop { flex: 1 0 112px; position: relative; padding: 0 8px; font-size: 12.5px; color: var(--muted); }
+.stop::before { content: ""; position: absolute; left: 0; right: 0; top: 7px; height: 3px; background: var(--brand); }
+.stop:first-child::before { left: 50%; } .stop:last-child::before { right: 50%; }
+.stop .dot { position: relative; display: block; width: 17px; height: 17px; border-radius: 50%; background: var(--surface); border: 3px solid var(--brand); margin: 0 auto 6px; }
+.stop b { display: block; text-align: center; color: var(--ink); font-family: var(--font-display); font-size: 14px; }
+.stop div { text-align: center; }
+.faretable { width: 100%; min-width: 0; font-size: 14px; }
+.faretable td, .faretable th { padding: 6px 6px; border: 0; }
+.faretable input { max-width: 120px; }
+
+/* Form */
+form { display: grid; gap: 14px; }
+.field { display: grid; gap: 5px; min-width: 0; }
+.field label { font-size: 13px; font-weight: 600; }
+.field .hint { font-size: 12px; color: var(--muted); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 480px) { .two { grid-template-columns: 1fr; } }
+input[type=text], input[type=password], input[type=tel], input[type=number], input[type=time], select, textarea { width: 100%; background: var(--bg); border: 1.5px solid var(--line); border-radius: 9px; padding: 9px 11px; }
+input:focus, select:focus, textarea:focus { border-color: var(--brand); outline: none; }
+textarea { min-height: 64px; resize: vertical; }
+.check { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.btn { border: 0; border-radius: 10px; padding: 11px 18px; font-weight: 700; background: var(--brand); color: var(--brand-ink); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn.ghost { background: transparent; color: var(--brand); border: 1.5px solid var(--brand); }
+.btn.danger { background: transparent; color: var(--bad); border: 1.5px solid var(--bad); }
+.btn.sm { padding: 6px 11px; font-size: 13px; border-radius: 8px; }
+a.btn { display: inline-block; text-decoration: none; text-align: center; }
+.btn.wa { background: var(--good); color: var(--surface); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.err { color: var(--bad); font-size: 13.5px; }
+
+/* Ticket */
+.ticket { border: 1.5px solid var(--brand); border-radius: 14px; overflow: hidden; }
+.ticket .top { background: var(--brand); color: var(--brand-ink); padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ticket .ref { font-family: var(--font-display); font-weight: 900; font-stretch: 115%; font-size: 22px; letter-spacing: .04em; }
+.ticket .body { padding: 14px 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; border-bottom: 1.5px dashed var(--line); }
+.ticket .kv span { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.ticket .kv b { font-size: 15px; }
+.ticket .foot { padding: 12px 16px; }
+
+.pill { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 2px 9px; border-radius: 999px; }
+.pill.paid { background: var(--good-soft); color: var(--good); }
+.pill.unpaid { background: var(--warn-soft); color: var(--warn); }
+
+/* Manifest */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.stat b { display: block; font-family: var(--font-display); font-size: 24px; font-weight: 800; }
+.stat span { font-size: 12.5px; color: var(--muted); }
+.tablewrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 14px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+th { font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700; }
+tr:last-child td { border-bottom: 0; }
+td.seatno { font-family: var(--font-display); font-weight: 800; font-size: 17px; width: 48px; }
+.empty { padding: 28px 16px; text-align: center; color: var(--muted); }
+.toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+
+.info { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 28px; }
+.info div { border-top: 3px solid var(--brand); padding-top: 10px; font-size: 14px; color: var(--muted); }
+.info b { display: block; color: var(--ink); font-family: var(--font-display); font-size: 15px; }
+
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 600; z-index: 20; max-width: calc(100% - 32px); }
+.confirmbox { border: 1.5px solid var(--bad); border-radius: 10px; padding: 10px 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 14px; }
+@media (prefers-reduced-motion: no-preference) { .seat, .day, .dir { transition: background .15s, border-color .15s; } }
+</style>
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="brandrow">
+      <div class="logo">
+        <svg viewBox="0 0 92 60" aria-hidden="true"><path fill="#ffffff" d="M46 18c-3 0-5 2-5.5 4.5L34 21 2 8l4 7 26 12-20-2 6 5 16 3-10 6 8 1 9-4 3 10 3-10 9 4 8-1-10-6 16-3 6-5-20 2 26-12 4-7-32 13-6.5 1.5C51 20 49 18 46 18z"/><circle cx="44.5" cy="22" r="1.3" fill="#0f2a50"/></svg>
+        <div>
+          <div class="wordmark">CHRIS LINER</div>
+          <div class="tagline">Windhoek ⇄ Oranjemund · Sunday to Friday</div>
+        </div>
+      </div>
+      <div class="phones num" aria-label="Booking phone numbers"><span>081 331 1175</span><span>081 295 7277</span><button class="tab" id="signout" style="border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:4px 10px" hidden>Sign out</button></div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-book" data-view="book">Book a seat</button>
+      <button class="tab" role="tab" id="tab-manifest" data-view="manifest" hidden>Manifest</button>
+      <button class="tab" role="tab" id="tab-fares" data-view="fares" hidden>Fares &amp; times</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="login" class="panel" style="max-width:420px;margin:24px auto" hidden>
+    <h2 style="font-size:22px;margin-bottom:6px">Staff sign-in</h2>
+    <p style="margin:0 0 16px;color:var(--muted)">Bookings from the office and from WhatsApp, in one place.</p>
+    <form id="loginForm">
+      <div class="field"><label for="loginEmail">Email</label><input type="text" id="loginEmail" autocomplete="username" inputmode="email" required></div>
+      <div class="field"><label for="loginPass">Password</label><input type="password" id="loginPass" autocomplete="current-password" required></div>
+      <div id="loginMsg" class="err" role="alert" hidden></div>
+      <div class="actions"><button class="btn" id="loginBtn" type="submit">Sign in</button></div>
+    </form>
+  </section>
+  <div id="app" hidden>
+  <div id="notice" class="notice" hidden></div>
+
+  <section class="trip" aria-label="Choose trip">
+    <div class="dirs" id="dirs"></div>
+    <div class="days" id="days" role="group" aria-label="Travel date"></div>
+    <div class="legs" id="legs"></div>
+    <div class="buses" id="buses" aria-label="Bus"></div>
+    <div class="busveh" id="busVeh"></div>
+  </section>
+
+  <section id="view-book">
+    <div class="desk">
+      <div class="panel">
+        <div class="triphead"><h2 id="tripTitle">Trip</h2><span class="count num" id="seatCount"></span></div>
+        <div id="van"></div>
+        <div class="legend"><span><i></i>Free</span><span><i class="ls"></i>Selected</span><span><i class="lp"></i>Booked elsewhere on the route</span><span><i class="lt"></i>Booked</span></div>
+      </div>
+      <div class="panel" id="side"></div>
+    </div>
+    <div class="info">
+      <div><b>Private group hire</b>Group transport to any destination across Namibia. Call to arrange.</div>
+      <div><b>Passenger liability insurance</b>Every seat on every trip is covered.</div>
+      <div><b>Air-conditioned</b>Travel the B1 and the long road south in comfort.</div>
+    </div>
+  </section>
+
+  <section id="view-manifest" hidden>
+    <div class="stats" id="stats"></div>
+    <div class="stopboard" id="stopBoard" aria-label="Boarding and drop-offs per stop"></div>
+    <div class="toolbar">
+      <h2 id="manTitle" style="font-size:19px">Manifest</h2>
+      <div class="actions">
+        <input type="text" id="manSearch" placeholder="Find name, phone or ref" style="width:220px">
+        <button class="btn ghost sm" id="copyManifest">Copy for driver</button>
+      </div>
+    </div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Seat</th><th>Passenger</th><th>Phone</th><th>Travels</th><th>Ref</th><th>Payment</th><th></th></tr></thead>
+      <tbody id="manBody"></tbody>
+    </table></div>
+  </section>
+
+  <section id="view-fares" hidden>
+    <div class="panel" style="max-width:640px">
+      <h2 style="font-size:19px;margin-bottom:4px">Fares &amp; departure times</h2>
+      <p class="hint" style="color:var(--muted);margin:0 0 16px">These show on every booking and confirmation message. The fare between two stops is the difference between their fares from Windhoek, and never less than the minimum fare. Staff only.</p>
+      <form id="faresForm"></form>
+    </div>
+    <div class="panel" style="max-width:640px;margin-top:16px">
+      <h2 style="font-size:19px;margin-bottom:4px">Buses &amp; fleet</h2>
+      <p class="hint" style="color:var(--muted);margin:0 0 16px">How many buses run each way on a normal day, and the vehicles you can put on a trip. Add an extra bus for a single day from the Book a seat tab. When one bus is full for a customer's stops, the WhatsApp bot books them on the next bus.</p>
+      <div id="fleetBox"></div>
+    </div>
+  </section>
+  </div>
+</main>
+<div class="toast" id="toast" hidden></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+(() => {
+  const PHONES = "081 331 1175 / 081 295 7277";
+  const SEATS = 13;
+  // Chris Liner's Toyota Quantum, right-hand drive, back to front 4-3-3-2-2 with the driver in the front row:
+  // seat 1 beside the driver, then 2-3, 4-6, 7-9 and the rear bench 10-13. Four columns; null is open floor or the aisle by the sliding door.
+  const LAYOUT = [[null, 1, null, "D"], [null, null, 2, 3], [null, 4, 5, 6], [null, 7, 8, 9], [10, 11, 12, 13]];
+  const FOLD = new Set();
+  // Stops in Windhoek -> Oranjemund order (B1, B4, C13).
+  const STOPS = ["Windhoek", "Rehoboth", "Mariental", "Keetmanshoop", "Aus", "Rosh Pinah", "Oranjemund"];
+  const ABBR = { Windhoek: "WHK", Rehoboth: "REH", Mariental: "MAR", Keetmanshoop: "KMP", Aus: "AUS", "Rosh Pinah": "RSP", Oranjemund: "OMD" };
+  const DIRS = {
+    "WHK-OMD": { from: "Windhoek", to: "Oranjemund" },
+    "OMD-WHK": { from: "Oranjemund", to: "Windhoek" },
+  };
+  const route = (dir) => (dir === "WHK-OMD" ? STOPS.slice() : STOPS.slice().reverse());
+  // Placeholders until the operator saves real values under "Fares & times".
+  const DEFAULT_CFG = {
+    fares: { Windhoek: 0, Rehoboth: 100, Mariental: 250, Keetmanshoop: 400, Aus: 500, "Rosh Pinah": 550, Oranjemund: 600 },
+    hours: { Windhoek: 0, Rehoboth: 1, Mariental: 3.25, Keetmanshoop: 5.5, Aus: 8, "Rosh Pinah": 10, Oranjemund: 11 },
+    minFare: 100,
+    "WHK-OMD": { time: "07:00", point: "Windhoek (pick-up point to be confirmed)" },
+    "OMD-WHK": { time: "07:00", point: "Oranjemund (pick-up point to be confirmed)" },
+    placeholder: true,
+  };
+  const TZ = "Africa/Windhoek";
+  const DAYS_AHEAD = 21;
+
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, attrs = {}, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v == null || v === false) continue;
+      if (k === "class") n.className = v;
+      else if (k === "text") n.textContent = v;
+      else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+      else n.setAttribute(k, v === true ? "" : v);
+    }
+    for (const c of kids.flat()) if (c != null) n.append(c.nodeType ? c : document.createTextNode(String(c)));
+    return n;
+  };
+
+  // ---------- dates (Africa/Windhoek) ----------
+  const todayISO = () => new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+  const parseISO = (s) => { const [y, m, d] = s.split("-").map(Number); return new Date(Date.UTC(y, m - 1, d)); };
+  const toISO = (d) => d.toISOString().slice(0, 10);
+  const addDays = (s, n) => { const d = parseISO(s); d.setUTCDate(d.getUTCDate() + n); return toISO(d); };
+  const isSaturday = (s) => parseISO(s).getUTCDay() === 6;
+  const fmtDate = (s, opts) => parseISO(s).toLocaleDateString("en-NA", { timeZone: "UTC", ...opts });
+  const longDate = (s) => fmtDate(s, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  const shortDate = (s) => fmtDate(s, { weekday: "short", day: "numeric", month: "short" });
+  const nad = (n) => "N$ " + Number(n || 0).toLocaleString("en-NA", { maximumFractionDigits: 0 });
+
+  // ---------- state ----------
+  const S = {
+    view: "book", dir: "WHK-OMD", date: null, from: 0, to: STOPS.length - 1,
+    seats: {},      // seatNo -> [{k, from, to}] (public)
+    bookings: {},   // key -> booking (staff only)
+    selected: null, focusSeat: null, lastTicket: null,
+    cfg: DEFAULT_CFG, staff: false, db: null, uid: null, live: false, loading: true,
+    confirmCancel: null, busy: false, error: "", waName: "",
+    bus: 1, buses: 1, trips: [], vehicles: [], perBus: {},
+  };
+  const WA_MAIN = "081 331 1175"; // number that receives WhatsApp booking requests
+  const tripKey = () => `${S.date}_${S.dir}_${S.bus}`;
+  const cfg = () => S.cfg;
+  const dirCfg = (dir) => ({ ...DEFAULT_CFG[dir], ...(S.cfg[dir] || {}) });
+  const stopName = (dir, i) => route(dir)[i];
+  function legFare(dir, a, b) {
+    const r = route(dir); const F = { ...DEFAULT_CFG.fares, ...(cfg().fares || {}) };
+    const v = Math.abs((Number(F[r[b]]) || 0) - (Number(F[r[a]]) || 0));
+    return Math.max(Number(cfg().minFare) || 0, Math.round(v));
+  }
+  function stopTime(dir, i) {
+    const r = route(dir); const H = { ...DEFAULT_CFG.hours, ...(cfg().hours || {}) };
+    const off = dir === "WHK-OMD" ? Number(H[r[i]]) || 0 : (Number(H.Oranjemund) || 0) - (Number(H[r[i]]) || 0);
+    const [h, m] = (dirCfg(dir).time || "07:00").split(":").map(Number);
+    let mins = Math.round(h * 60 + m + off * 60); const day = Math.floor(mins / 1440); mins = ((mins % 1440) + 1440) % 1440;
+    return `${String(Math.floor(mins / 60)).padStart(2, "0")}:${String(mins % 60).padStart(2, "0")}${day > 0 ? " (+1 day)" : ""}`;
+  }
+  const overlaps = (a, b) => a.from < b.to && b.from < a.to;
+  const segsOf = (seat) => S.seats[seat] || [];
+  const leg = () => ({ from: S.from, to: S.to });
+  const freeFor = (seat, l = leg()) => !segsOf(seat).some((g) => overlaps(g, l));
+  const legText = (dir, a, b) => `${stopName(dir, a)} → ${stopName(dir, b)}`;
+
+  (() => { let d = todayISO(); while (isSaturday(d)) d = addDays(d, 1); S.date = d; })();
+  try { const saved = localStorage.getItem("cl-dir"); if (saved && DIRS[saved]) S.dir = saved; } catch (e) {}
+
+  let toastTimer;
+  function toast(msg) { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), 2600); }
+  async function copy(text) {
+    try { await navigator.clipboard.writeText(text); toast("Copied"); }
+    catch (e) {
+      const ta = el("textarea", { style: "position:fixed;left:-9999px" }); ta.value = text; document.body.append(ta); ta.select();
+      try { document.execCommand("copy"); toast("Copied"); } catch (e2) { toast("Select the text and copy it"); }
+      ta.remove();
+    }
+  }
+  function notice(msg) { const n = $("notice"); n.textContent = msg || ""; n.hidden = !msg; }
+
+  // ---------- trip picker ----------
+  function renderDirs() {
+    const box = $("dirs"); box.replaceChildren();
+    for (const [k, d] of Object.entries(DIRS)) {
+      box.append(el("button", { class: "dir", "aria-pressed": String(S.dir === k), onclick: () => { if (S.dir !== k) { S.dir = k; S.from = 0; S.to = STOPS.length - 1; try { localStorage.setItem("cl-dir", k); } catch (e) {} changeTrip(); } } },
+        el("b", { text: `${d.from} → ${d.to}` }),
+        el("small", { class: "num", text: `Departs ${dirCfg(k).time} · stops at ${route(k).slice(1, -1).join(", ")}` })));
+    }
+  }
+  function renderDays() {
+    const box = $("days"); box.replaceChildren();
+    const t = todayISO();
+    for (let i = 0; i < DAYS_AHEAD; i++) {
+      const d = addDays(t, i); const sat = isSaturday(d);
+      box.append(el("button", { class: "day", disabled: sat, title: sat ? "No service on Saturdays" : null, "aria-pressed": String(S.date === d), "aria-label": longDate(d) + (sat ? ", no service" : ""), onclick: () => { S.date = d; changeTrip(); } },
+        el("span", { class: "dw", text: i === 0 ? "Today" : fmtDate(d, { weekday: "short" }) }),
+        el("span", { class: "dd num", text: fmtDate(d, { day: "numeric" }) }),
+        el("span", { class: "dm", text: sat ? "No bus" : fmtDate(d, { month: "short" }) })));
+    }
+  }
+  function renderLegs() {
+    const r = route(S.dir);
+    const mk = (id, label, val, lo, hi, on) => el("div", { class: "field" }, el("label", { for: id, text: label }),
+      el("select", { id, onchange: (e) => on(Number(e.target.value)) }, ...r.map((s, i) => i >= lo && i <= hi ? el("option", { value: String(i), selected: i === val, text: `${s} · ${stopTime(S.dir, i)}` }) : null)));
+    $("legs").replaceChildren(
+      mk("legFrom", "Getting on at", S.from, 0, r.length - 2, (v) => { S.from = v; if (S.to <= v) S.to = v + 1; legChanged(); }),
+      el("div", { class: "arrow", text: "→" }),
+      mk("legTo", "Getting off at", S.to, 1, r.length - 1, (v) => { S.to = v; if (S.from >= v) S.from = v - 1; legChanged(); }),
+      el("div", { class: "fare num", text: nad(legFare(S.dir, S.from, S.to)) }));
+  }
+  function legChanged() { S.selected = null; S.focusSeat = null; S.lastTicket = null; S.error = ""; S.confirmCancel = null; render(); }
+
+  // ---------- seat map ----------
+  const wheel = () => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.innerHTML = '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/><path d="M3.5 11h6M14.5 11h6M12 14.5V21" stroke="currentColor" stroke-width="2" fill="none"/>'; return s; };
+  function renderVan() {
+    const r = route(S.dir);
+    const van = el("div", { class: "van" }, el("div", { class: "door" }), el("div", { class: "doorlbl", text: "Sliding door" }));
+    LAYOUT.forEach((row, i) => {
+      const rr = el("div", { class: "row" + (i === 0 ? " front" : i === LAYOUT.length - 1 ? " rear" : "") });
+      for (const s of row) {
+        if (s === null) { rr.append(el("div", { "aria-hidden": "true" })); continue; }
+        if (s === "D") { rr.append(el("div", { class: "seat driver", "aria-label": "Driver" }, wheel(), "Driver")); continue; }
+        const segs = segsOf(s); const free = freeFor(s); const clash = segs.filter((g) => overlaps(g, leg()));
+        const cls = ["seat"];
+        if (!free) cls.push("taken"); else if (segs.length) cls.push("partial");
+        if (!free && S.staff) cls.push("staff");
+        if (S.staff && clash.length && clash.every((g) => S.bookings[g.k]?.paid)) cls.push("paid");
+        if (S.selected === s || S.focusSeat === s) cls.push("sel");
+        let sub = null, label;
+        if (!free) {
+          const b = S.staff && S.bookings[clash[0].k];
+          sub = b ? b.name.split(" ")[0] + (clash.length > 1 ? ` +${clash.length - 1}` : "") : null;
+          label = `Seat ${s}, booked${b ? " by " + b.name : ""}`;
+        } else if (segs.length) {
+          sub = segs.map((g) => `${ABBR[r[g.from]]}–${ABBR[r[g.to]]}`).join(" ");
+          label = `Seat ${s}, free for your stops, booked ${segs.map((g) => legText(S.dir, g.from, g.to)).join(" and ")}`;
+        } else label = `Seat ${s}, free`;
+        const btn = el("button", { class: cls.join(" "), "aria-label": label, title: label, disabled: !free && !S.staff,
+          onclick: () => {
+            S.lastTicket = null; S.error = ""; S.confirmCancel = null;
+            if (!free) { S.focusSeat = S.focusSeat === s ? null : s; S.selected = null; }
+            else { S.selected = S.selected === s ? null : s; S.focusSeat = null; }
+            render();
+          } }, String(s));
+        if (FOLD.has(s)) { btn.classList.add("fold"); btn.title = label + " (fold-down aisle seat)"; }
+        if (sub) btn.append(el("small", { text: sub }));
+        else if (FOLD.has(s)) btn.append(el("small", { text: "fold-down" }));
+        rr.append(btn);
+      }
+      van.append(rr);
+    });
+    $("van").replaceChildren(van);
+    let freeCount = 0; for (let s = 1; s <= SEATS; s++) if (freeFor(s)) freeCount++;
+    $("seatCount").textContent = S.loading && S.live ? "Loading seats…" : `${freeCount} of ${SEATS} seats free for these stops`;
+    $("tripTitle").textContent = `${S.buses > 1 ? busName(S.bus) + " · " : ""}${shortDate(S.date)} · ${legText(S.dir, S.from, S.to)}`;
+  }
+
+  // ---------- side panel ----------
+  function kv(k, v) { return el("div", { class: "kv" }, el("span", { text: k }), el("b", { class: "num", text: v })); }
+  function confirmText(b) {
+    const c = dirCfg(b.dir);
+    const where = b.from === 0 ? c.point : stopName(b.dir, b.from);
+    return `Chris Liner booking ${b.ref}\n${legText(b.dir, b.from, b.to)}, ${longDate(b.date)}\nBoards about ${stopTime(b.dir, b.from)} at ${where}\n${S.buses > 1 ? busName(b.bus) + ", s" : "S"}eat ${b.seat} for ${b.name}\nFare ${nad(b.fare)}${b.paid ? " (paid)" : " (pay before departure)"}\nQueries: ${PHONES}`;
+  }
+  function renderTicket(b, opts = {}) {
+    return el("div", { class: "ticket" },
+      el("div", { class: "top" }, el("div", {}, el("div", { class: "eyebrow", style: "color:inherit;opacity:.8", text: opts.title || "Booking" }), el("div", { class: "ref", text: b.ref })),
+        el("span", { class: "pill " + (b.paid ? "paid" : "unpaid"), text: b.paid ? `Paid · ${b.method || "Cash"}` : "Not paid" })),
+      el("div", { class: "body" },
+        kv("Passenger", b.name), kv("Phone", b.phone), kv("Seat", S.buses > 1 ? `${b.seat} · ${busName(b.bus)}` : String(b.seat)), kv("Fare", nad(b.fare)),
+        kv("Gets on", `${stopName(b.dir, b.from)} · ${stopTime(b.dir, b.from)}`), kv("Gets off", `${stopName(b.dir, b.to)} · ${stopTime(b.dir, b.to)}`), kv("Date", shortDate(b.date)),
+        b.pickup ? kv("Pick-up spot", b.pickup) : null),
+      el("div", { class: "foot actions" },
+        waNumber(b.phone) ? el("a", { class: "btn wa sm", href: waLink(b.phone, confirmText(b)), target: "_blank", rel: "noopener", text: "Send on WhatsApp" }) : null,
+        el("button", { class: "btn ghost sm", onclick: () => copy(confirmText(b)), text: "Copy confirmation" }), ...(opts.extra || [])));
+  }
+  // WhatsApp click-to-chat: Namibian numbers like 081 331 1175 become 264813311175.
+  function waNumber(p) {
+    let d = String(p || "").replace(/\D/g, "");
+    if (d.startsWith("00")) d = d.slice(2);
+    if (d.startsWith("0")) d = "264" + d.slice(1);
+    return d.length >= 11 ? d : "";
+  }
+  const waLink = (p, text) => `https://wa.me/${waNumber(p)}?text=${encodeURIComponent(text)}`;
+  function requestText() {
+    const r = route(S.dir);
+    return [`Hi Chris Liner, I'd like to book a seat.`,
+      `Date: ${longDate(S.date)}`,
+      `From: ${r[S.from]} (about ${stopTime(S.dir, S.from)})`,
+      `To: ${r[S.to]}`,
+      S.selected ? `Seat: ${S.selected}` : `Seat: any free seat`,
+      `Fare shown: ${nad(legFare(S.dir, S.from, S.to))}`,
+      `Name: ${S.waName.trim() || ""}`].join("\n");
+  }
+  const bookingsOnSeat = (seat) => segsOf(seat).map((g) => S.bookings[g.k]).filter(Boolean).sort((a, b) => a.from - b.from);
+  function seatBookingCard(b) {
+    const extra = [
+      el("button", { class: "btn ghost sm", text: b.paid ? "Mark not paid" : "Mark paid", onclick: () => setPaid(b, !b.paid) }),
+      el("button", { class: "btn danger sm", text: "Cancel booking", onclick: () => { S.confirmCancel = b.key; render(); } }),
+    ];
+    const box = el("div", { style: "display:grid;gap:10px" }, renderTicket(b, { extra }));
+    if (S.confirmCancel === b.key) box.append(cancelBox(b));
+    if (b.notes) box.append(el("p", { style: "color:var(--muted);font-size:13px;margin:0", text: "Notes: " + b.notes }));
+    return box;
+  }
+
+  function renderSide() {
+    const side = $("side"); side.replaceChildren();
+    const fare = legFare(S.dir, S.from, S.to); const lt = legText(S.dir, S.from, S.to);
+
+    if (S.lastTicket) {
+      side.append(el("div", { class: "eyebrow", text: "Seat booked", style: "margin-bottom:10px;color:var(--good)" }), renderTicket(S.lastTicket, { title: "Booking confirmed" }),
+        el("div", { class: "actions", style: "margin-top:14px" }, el("button", { class: "btn", text: "Book another seat", onclick: () => { S.lastTicket = null; render(); } })));
+      return;
+    }
+
+    if (S.staff && S.focusSeat) {
+      const list = bookingsOnSeat(S.focusSeat);
+      side.append(el("div", { class: "eyebrow", style: "margin-bottom:10px", text: `Seat ${S.focusSeat} on this trip` }));
+      if (!list.length) side.append(el("p", { text: "Loading bookings for this seat…" }));
+      side.append(el("div", { style: "display:grid;gap:16px" }, ...list.map(seatBookingCard)));
+      return;
+    }
+
+    if (!S.staff) {
+      side.append(
+        el("div", { class: "eyebrow", text: "How to book" }),
+        el("h2", { style: "font-size:22px;margin:6px 0 10px", text: S.selected ? `Seat ${S.selected} is free` : "Pick a seat, then book on WhatsApp" }),
+        el("p", { style: "margin:0 0 12px", text: `${lt} on ${longDate(S.date)}. Boards about ${stopTime(S.dir, S.from)}. Fare ${nad(fare)} per seat.` }),
+        el("div", { class: "field", style: "margin-bottom:12px" }, el("label", { for: "waName", text: "Your name" }),
+          el("input", { type: "text", id: "waName", autocomplete: "name", placeholder: "Full name as on ID", value: S.waName, oninput: (e) => { S.waName = e.target.value; const a = $("waGo"); if (a) a.href = waLink(WA_MAIN, requestText()); } })),
+        el("div", { class: "actions" }, el("a", { class: "btn wa", id: "waGo", href: waLink(WA_MAIN, requestText()), target: "_blank", rel: "noopener", text: S.selected ? `Book seat ${S.selected} on WhatsApp` : "Book on WhatsApp" })),
+        el("p", { style: "margin:12px 0 0;font-size:13.5px;color:var(--muted)", text: "WhatsApp opens with your trip details filled in. Send it, and we reply to confirm your seat and how to pay. Your seat is held once we confirm." }),
+        el("p", { style: "margin:12px 0 4px;font-size:13.5px", text: "WhatsApp not opening? Message or call:" }),
+        el("div", { class: "actions" }, ...["081 331 1175", "081 295 7277"].map((p) => el("button", { class: "btn ghost sm", onclick: () => copy(p) }, p))));
+      return;
+    }
+
+    if (!S.selected) {
+      side.append(el("div", { class: "eyebrow", text: "New booking" }),
+        el("h2", { style: "font-size:22px;margin:6px 0 8px", text: "Tap a free seat on the van" }),
+        el("p", { style: "margin:0;color:var(--muted)", text: `${lt}, ${longDate(S.date)}. Striped seats are taken on another part of the route but free for these stops. Tap a grey seat to see or change its booking.` }));
+      return;
+    }
+    const others = bookingsOnSeat(S.selected);
+    const f = el("form", { onsubmit: (e) => { e.preventDefault(); book(f); } },
+      el("div", {}, el("div", { class: "eyebrow", text: "New booking" }), el("h2", { style: "font-size:22px;margin-top:4px", text: `Seat ${S.selected} · ${lt}` }),
+        el("div", { class: "num", style: "color:var(--muted);font-size:13.5px", text: `${longDate(S.date)} · boards about ${stopTime(S.dir, S.from)}` })),
+      others.length ? el("div", { style: "font-size:13px;background:var(--brand-soft);border-radius:8px;padding:8px 10px" }, "Also on this seat: " + others.map((o) => `${o.name} (${legText(o.dir, o.from, o.to)})`).join("; ")) : null,
+      el("div", { class: "field" }, el("label", { for: "fName", text: "Passenger name" }), el("input", { type: "text", id: "fName", name: "name", required: true, autocomplete: "off", placeholder: "Full name as on ID" })),
+      el("div", { class: "two" },
+        el("div", { class: "field" }, el("label", { for: "fPhone", text: "Cell number" }), el("input", { type: "tel", id: "fPhone", name: "phone", required: true, placeholder: "081 234 5678", inputmode: "tel" })),
+        el("div", { class: "field" }, el("label", { for: "fFare", text: "Fare (N$)" }), el("input", { type: "number", id: "fFare", name: "fare", min: "0", step: "10", value: String(fare) }))),
+      el("div", { class: "field" }, el("label", { for: "fPickup", text: "Pick-up spot" }), el("input", { type: "text", id: "fPickup", name: "pickup", placeholder: `e.g. Engen garage, ${stopName(S.dir, S.from)}` })),
+      el("div", { class: "two" },
+        el("label", { class: "check" }, el("input", { type: "checkbox", id: "fPaid", name: "paid" }), "Paid already"),
+        el("div", { class: "field" }, el("label", { for: "fMethod", text: "Paid by" }), el("select", { id: "fMethod", name: "method" }, ...["Cash", "EFT", "eWallet / Blue Wallet", "Card"].map((m) => el("option", { text: m }))))),
+      el("div", { class: "field" }, el("label", { for: "fNotes", text: "Notes" }), el("textarea", { id: "fNotes", name: "notes", placeholder: "Luggage, child on lap, special needs…" })),
+      S.error ? el("div", { class: "err", role: "alert", text: S.error }) : null,
+      el("div", { class: "actions" }, el("button", { class: "btn", type: "submit", disabled: S.busy, text: S.busy ? "Booking…" : `Book seat ${S.selected}` }),
+        el("button", { class: "btn ghost", type: "button", text: "Clear", onclick: () => { S.selected = null; S.error = ""; render(); } })));
+    side.append(f);
+  }
+  function cancelBox(b) {
+    return el("div", { class: "confirmbox" }, el("span", { text: `Cancel ${b.name}'s seat ${b.seat} (${legText(b.dir, b.from, b.to)})?` }),
+      el("button", { class: "btn danger sm", text: "Yes, cancel", onclick: () => cancel(b) }),
+      el("button", { class: "btn ghost sm", text: "Keep", onclick: () => { S.confirmCancel = null; render(); } }));
+  }
+
+  // ---------- manifest ----------
+  const allBookings = () => Object.values(S.bookings).filter((b) => b.trip === tripKey()).sort((a, b) => a.from - b.from || a.seat - b.seat);
+  function loads(list) {
+    const n = route(S.dir).length; const on = Array(n).fill(0), off = Array(n).fill(0), aboard = Array(n).fill(0);
+    for (const b of list) { on[b.from]++; off[b.to]++; for (let i = b.from; i < b.to; i++) aboard[i]++; }
+    return { on, off, aboard };
+  }
+  function renderManifest() {
+    const r = route(S.dir); const c = dirCfg(S.dir);
+    const list = allBookings(); const L = loads(list);
+    const paid = list.filter((b) => b.paid);
+    const total = list.reduce((s, b) => s + Number(b.fare || 0), 0);
+    const got = paid.reduce((s, b) => s + Number(b.fare || 0), 0);
+    const peak = Math.max(0, ...L.aboard);
+    const st = (v, l) => el("div", { class: "stat" }, el("b", { class: "num", text: v }), el("span", { text: l }));
+    $("stats").replaceChildren(st(String(list.length), "Passengers booked"), st(`${peak}/${SEATS}`, "Fullest stretch of the trip"), st(nad(got), "Collected"), st(nad(total - got), `Still to collect (${list.length - paid.length} unpaid)`));
+    $("stopBoard").replaceChildren(...r.map((s, i) => el("div", { class: "stop" }, el("span", { class: "dot" }), el("b", { text: s }),
+      el("div", { class: "num", text: stopTime(S.dir, i) }),
+      el("div", { class: "num", text: [i < r.length - 1 ? `${L.on[i]} on` : null, i > 0 ? `${L.off[i]} off` : null].filter(Boolean).join(" · ") }),
+      i < r.length - 1 ? el("div", { class: "num", style: "color:var(--ink);font-weight:600", text: `${L.aboard[i]}/${SEATS} aboard` }) : null)));
+    $("manTitle").textContent = `${shortDate(S.date)} · ${DIRS[S.dir].from} → ${DIRS[S.dir].to} · ${c.time}${S.buses > 1 || vehicleOf(S.bus) ? " · " + busLabel(S.bus) : ""}`;
+    const q = $("manSearch").value.trim().toLowerCase();
+    const rows = list.filter((b) => !q || [b.name, b.phone, b.ref, b.pickup, r[b.from], r[b.to]].join(" ").toLowerCase().includes(q));
+    const body = $("manBody"); body.replaceChildren();
+    if (!rows.length) {
+      body.append(el("tr", {}, el("td", { colspan: "7", class: "empty", text: list.length ? "No passenger matches that search." : (S.loading ? "Loading manifest…" : "No bookings on this trip yet. Book seats from the Book a seat tab.") })));
+      return;
+    }
+    for (const b of rows) {
+      body.append(el("tr", {},
+        el("td", { class: "seatno num", text: String(b.seat) }),
+        el("td", {}, el("div", { style: "font-weight:600", text: b.name }), b.notes ? el("div", { style: "font-size:12.5px;color:var(--muted)", text: b.notes }) : null,
+          el("div", { style: "display:flex;gap:4px;flex-wrap:wrap;margin-top:3px" }, b.source === "whatsapp" ? el("span", { class: "pill paid", text: "WhatsApp" }) : null, reconfirmPill(b))),
+        el("td", { class: "num", text: b.phone }),
+        el("td", {}, el("div", { text: legText(b.dir, b.from, b.to) }), b.pickup ? el("div", { style: "font-size:12.5px;color:var(--muted)", text: "Pick-up: " + b.pickup }) : null),
+        el("td", { class: "num", style: "font-weight:600", text: b.ref }),
+        el("td", {}, el("button", { class: "pill " + (b.paid ? "paid" : "unpaid"), style: "border:0", title: "Click to change", onclick: () => setPaid(b, !b.paid), text: b.paid ? `Paid · ${b.method || "Cash"} · ${nad(b.fare)}` : `Not paid · ${nad(b.fare)}` })),
+        el("td", {}, S.confirmCancel === b.key ? cancelBox(b) : el("button", { class: "btn danger sm", text: "Cancel", onclick: () => { S.confirmCancel = b.key; render(); } }))));
+    }
+  }
+  function reconfirmPill(b) {
+    const m = { sent: ["unpaid", "Asked to reconfirm"], yes: ["paid", "Reconfirmed"], no_reply: ["unpaid", "No reply to reconfirm"], failed: ["unpaid", "Reconfirm not delivered"] }[b.reconfirm];
+    return m ? el("span", { class: "pill " + m[0], text: m[1] }) : null;
+  }
+  function manifestText() {
+    const r = route(S.dir); const list = allBookings(); const L = loads(list);
+    const v = vehicleOf(S.bus);
+    const lines = [`CHRIS LINER manifest, ${busName(S.bus)}${v ? " (" + [v.name, v.reg].filter(Boolean).join(", ") + ")" : ""}${v && v.driver ? ", driver " + v.driver : ""}`, `${DIRS[S.dir].from} to ${DIRS[S.dir].to}, ${longDate(S.date)}, departs ${dirCfg(S.dir).time}`, `${list.length} passengers, fullest stretch ${Math.max(0, ...L.aboard)}/${SEATS}`];
+    r.forEach((s, i) => {
+      const on = list.filter((b) => b.from === i), off = list.filter((b) => b.to === i);
+      if (!on.length && !off.length) return;
+      lines.push("", `${s.toUpperCase()} (about ${stopTime(S.dir, i)})`);
+      for (const b of off) lines.push(`  OFF seat ${b.seat}: ${b.name}`);
+      for (const b of on) lines.push(`  ON  seat ${b.seat}: ${b.name}, ${b.phone}, to ${r[b.to]}${b.pickup ? ", pick-up " + b.pickup : ""}, ${b.paid ? "PAID" : "COLLECT " + nad(b.fare)}`);
+    });
+    return lines.join("\n");
+  }
+  $("copyManifest").addEventListener("click", () => copy(manifestText()));
+  $("manSearch").addEventListener("input", () => renderManifest());
+
+  // ---------- fares ----------
+  function renderFares() {
+    const f = $("faresForm"); f.replaceChildren();
+    const F = { ...DEFAULT_CFG.fares, ...(cfg().fares || {}) }; const H = { ...DEFAULT_CFG.hours, ...(cfg().hours || {}) };
+    for (const k of Object.keys(DIRS)) {
+      const c = dirCfg(k);
+      f.append(el("fieldset", { style: "border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:12px;margin:0" },
+        el("legend", { style: "font-family:var(--font-display);font-weight:700;padding:0 6px", text: `${DIRS[k].from} → ${DIRS[k].to}` }),
+        el("div", { class: "two" },
+          el("div", { class: "field" }, el("label", { for: `time-${k}`, text: `Departs ${DIRS[k].from} at` }), el("input", { type: "time", id: `time-${k}`, value: c.time })),
+          el("div", { class: "field" }, el("label", { for: `point-${k}`, text: "Departure point" }), el("input", { type: "text", id: `point-${k}`, value: c.point }))),
+        el("div", { class: "field", style: "max-width:220px" }, el("label", { for: `nbus-${k}`, text: "Buses on a normal day" }), el("input", { type: "number", id: `nbus-${k}`, min: "1", max: "6", step: "1", value: String(Number(cfg().busesPerDay?.[k]) || 1) }))));
+    }
+    const tb = el("tbody");
+    STOPS.forEach((s, i) => tb.append(el("tr", {}, el("td", { style: "font-weight:600", text: s }),
+      el("td", {}, i === 0 ? el("span", { class: "num", style: "color:var(--muted)", text: "Start" }) : el("input", { type: "number", id: `sf-${i}`, min: "0", step: "10", value: String(F[s]), "aria-label": `Fare from Windhoek to ${s}` })),
+      el("td", {}, i === 0 ? el("span", { class: "num", style: "color:var(--muted)", text: "0" }) : el("input", { type: "number", id: `sh-${i}`, min: "0", step: "0.25", value: String(H[s]), "aria-label": `Hours from Windhoek to ${s}` })))));
+    f.append(el("div", { class: "field" }, el("div", { style: "font-weight:600;font-size:13px", text: "Stops along the route" }),
+      el("div", { style: "overflow-x:auto" }, el("table", { class: "faretable" }, el("thead", {}, el("tr", {}, el("th", { text: "Stop" }), el("th", { text: "Fare from Windhoek (N$)" }), el("th", { text: "Hours from Windhoek" }))), tb))),
+      el("div", { class: "field", style: "max-width:220px" }, el("label", { for: "minFare", text: "Minimum fare (N$)" }), el("input", { type: "number", id: "minFare", min: "0", step: "10", value: String(cfg().minFare ?? DEFAULT_CFG.minFare) })),
+      el("div", { class: "field" }, el("label", { for: "payNote", text: "Payment instructions (sent with every WhatsApp booking)" }), el("textarea", { id: "payNote" }, cfg().payment || "")),
+      el("div", { class: "actions" }, el("button", { class: "btn", type: "submit", text: "Save fares and times" })));
+    f.onsubmit = async (e) => {
+      e.preventDefault();
+      const next = { fares: { Windhoek: 0 }, hours: { Windhoek: 0 }, minFare: Number($("minFare").value) || 0, placeholder: false, updatedAt: new Date().toISOString() };
+      STOPS.forEach((s, i) => { if (i) { next.fares[s] = Number($(`sf-${i}`).value) || 0; next.hours[s] = Number($(`sh-${i}`).value) || 0; } });
+      for (const k of Object.keys(DIRS)) next[k] = { time: $(`time-${k}`).value || "07:00", point: $(`point-${k}`).value.trim() };
+      next.payment = $("payNote").value.trim();
+      next.busesPerDay = Object.fromEntries(Object.keys(DIRS).map((k) => [k, Math.min(6, Math.max(1, Math.round(Number($(`nbus-${k}`).value) || 1)))]));
+      const { error } = await sb.from("settings").update({ data: { ...S.cfg, ...next }, updated_at: new Date().toISOString() }).eq("id", 1);
+      if (error) toast("Couldn't save. Try again."); else { S.cfg = { ...S.cfg, ...next }; notice(""); toast("Saved. The WhatsApp bot uses these from now on."); render(); }
+    };
+  }
+
+  // ---------- actions (Supabase) ----------
+  const rand = (n, a = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789") => { let s = ""; for (const x of crypto.getRandomValues(new Uint32Array(n))) s += a[x % a.length]; return s; };
+  const toB = (r) => ({ key: r.id, ref: r.ref, trip: `${r.trip_date}_${r.dir}_${r.bus_no || 1}`, date: r.trip_date, dir: r.dir, bus: r.bus_no || 1, seat: r.seat, from: r.from_idx, to: r.to_idx,
+    name: r.name, phone: r.phone, fare: Number(r.fare), pickup: r.pickup, paid: r.paid, method: r.method, notes: r.notes, source: r.source, reconfirm: r.reconfirm_status });
+
+  async function book(form) {
+    const name = form.name.value.trim(); const phone = form.phone.value.trim();
+    if (!name || !phone) { S.error = "Enter the passenger's name and cell number."; render(); return; }
+    if (!/^[+0-9 ()-]{7,}$/.test(phone)) { S.error = "That cell number doesn't look right. Use digits, e.g. 081 234 5678."; render(); return; }
+    const seat = S.selected;
+    const row = { ref: "CL-" + rand(5), trip_date: S.date, dir: S.dir, bus_no: S.bus, seat, from_idx: S.from, to_idx: S.to, name, phone,
+      fare: Number(form.fare.value) || 0, pickup: form.pickup.value.trim(), paid: form.paid.checked, method: form.paid.checked ? form.method.value : "",
+      notes: form.notes.value.trim(), source: "staff" };
+    S.busy = true; S.error = ""; render();
+    const { data, error } = await sb.from("bookings").insert(row).select().single();
+    if (error) {
+      const raced = error.code === "23P01";
+      S.error = raced ? `Seat ${seat} on ${busName(S.bus)} was just booked for part of these stops. Pick another seat.` :
+        error.code === "42501" ? "Your login isn't on the staff list. Ask Neil to add you." :
+        "Couldn't save the booking. Check your connection and try again.";
+      if (raced) S.selected = null;
+    } else { S.lastTicket = toB(data); S.selected = null; toast(`Seat ${seat} booked · ${data.ref}`); }
+    S.busy = false; await loadTrip(); render();
+  }
+  async function setPaid(b, paid) {
+    const { error } = await sb.from("bookings").update({ paid, method: paid ? (b.method || "Cash") : "" }).eq("id", b.key);
+    toast(error ? "Couldn't update payment. Try again." : paid ? "Marked paid" : "Marked not paid");
+    await loadTrip();
+  }
+  async function cancel(b) {
+    const { error } = await sb.from("bookings").update({ status: "cancelled" }).eq("id", b.key);
+    if (error) toast("Couldn't cancel. Try again.");
+    else { S.confirmCancel = null; if (!bookingsOnSeat(b.seat).some((o) => o.key !== b.key)) S.focusSeat = null; toast(`Seat ${b.seat} is free again from ${stopName(b.dir, b.from)} to ${stopName(b.dir, b.to)}`); }
+    await loadTrip(); render();
+  }
+
+  // ---------- buses ----------
+  const busName = (n) => `Bus ${n}`;
+  const vehicleOf = (n) => { const t = S.trips.find((x) => x.bus_no === n); return t && S.vehicles.find((v) => v.id === t.vehicle_id); };
+  const busLabel = (n) => { const v = vehicleOf(n); return v ? `${busName(n)} · ${v.reg || v.name}` : busName(n); };
+  async function loadVehicles() {
+    const { data, error } = await sb.from("vehicles").select("*").order("id");
+    if (!error) S.vehicles = data || [];
+  }
+  function pickBus(n) { if (S.bus === n) return; S.bus = n; S.selected = null; S.focusSeat = null; S.lastTicket = null; S.confirmCancel = null; S.error = ""; S.loading = true; loadTrip(); render(); }
+  async function addBus() {
+    const n = S.buses + 1;
+    if (n > 6) { toast("Up to 6 buses per trip"); return; }
+    const used = new Set(S.trips.map((t) => t.vehicle_id));
+    const v = S.vehicles.find((x) => x.active && !used.has(x.id));
+    const rows = [];
+    for (let i = 1; i <= n; i++) if (!S.trips.some((t) => t.bus_no === i)) rows.push({ trip_date: S.date, dir: S.dir, bus_no: i, vehicle_id: i === n && v ? v.id : null });
+    const { error } = await sb.from("trips").upsert(rows);
+    if (error) { toast("Couldn't add the bus. Try again."); return; }
+    toast(`${busName(n)} added for ${shortDate(S.date)}`);
+    S.bus = n; S.selected = null; S.focusSeat = null; S.lastTicket = null; S.confirmCancel = null; S.loading = true; await loadTrip();
+  }
+  async function removeBus(n) {
+    const { error } = await sb.from("trips").delete().eq("trip_date", S.date).eq("dir", S.dir).gte("bus_no", n);
+    if (error) { toast("Couldn't remove the bus. Try again."); return; }
+    S.bus = 1; S.selected = null; S.focusSeat = null; S.lastTicket = null; S.loading = true; toast(`${busName(n)} removed`); await loadTrip();
+  }
+  async function setVehicle(n, vid) {
+    const { error } = await sb.from("trips").upsert({ trip_date: S.date, dir: S.dir, bus_no: n, vehicle_id: vid || null });
+    toast(error ? "Couldn't save the vehicle. Try again." : "Vehicle saved");
+    await loadTrip();
+  }
+  function renderBuses() {
+    const box = $("buses"), vb = $("busVeh");
+    box.replaceChildren(); vb.replaceChildren();
+    if (!S.staff) return;
+    for (let n = 1; n <= S.buses; n++) {
+      const v = vehicleOf(n);
+      box.append(el("button", { class: "bus", "aria-pressed": String(S.bus === n), onclick: () => pickBus(n) },
+        el("b", { text: busName(n) }),
+        el("small", { class: "num", text: `${v ? (v.reg || v.name) + " · " : ""}${S.perBus[n] || 0} booked` })));
+    }
+    if (S.buses < 6) box.append(el("button", { class: "bus add", title: "Run another bus on this trip", onclick: addBus, text: "+ Add bus" }));
+    const cur = S.trips.find((t) => t.bus_no === S.bus);
+    vb.append(el("div", { class: "field" }, el("label", { for: "busVehicle", text: `Vehicle for ${busName(S.bus)}` }),
+      el("select", { id: "busVehicle", onchange: (e) => setVehicle(S.bus, Number(e.target.value)) },
+        el("option", { value: "", text: "Not set" }),
+        ...S.vehicles.filter((v) => v.active || v.id === cur?.vehicle_id).map((v) => el("option", { value: String(v.id), selected: v.id === cur?.vehicle_id, text: [v.name, v.reg, v.driver && "driver " + v.driver].filter(Boolean).join(" · ") })))));
+    const dflt = Number(cfg().busesPerDay?.[S.dir]) || 1;
+    if (S.bus === S.buses && S.bus > dflt && !(S.perBus[S.bus])) vb.append(el("button", { class: "btn ghost sm", style: "margin-bottom:4px", text: `Remove ${busName(S.bus)}`, onclick: () => removeBus(S.bus) }));
+  }
+  function renderFleet() {
+    const box = $("fleetBox"); box.replaceChildren();
+    const tb = el("tbody");
+    const row = (v) => {
+      const name = el("input", { type: "text", value: v.name, "aria-label": "Name", placeholder: "e.g. Quantum 1" });
+      const reg = el("input", { type: "text", value: v.reg, "aria-label": "Registration", placeholder: "N 12345 W" });
+      const drv = el("input", { type: "text", value: v.driver, "aria-label": "Usual driver", placeholder: "Driver" });
+      const act = el("input", { type: "checkbox", checked: v.active !== false, "aria-label": "In service" });
+      const save = el("button", { class: "btn ghost sm", type: "button", text: v.id ? "Save" : "Add", onclick: async () => {
+        const rec = { name: name.value.trim() || "Bus", reg: reg.value.trim(), driver: drv.value.trim(), active: act.checked };
+        const { error } = v.id ? await sb.from("vehicles").update(rec).eq("id", v.id) : await sb.from("vehicles").insert(rec);
+        toast(error ? "Couldn't save. Try again." : v.id ? "Vehicle saved" : "Vehicle added");
+        await loadVehicles(); renderFleet();
+      } });
+      return el("tr", {}, el("td", {}, name), el("td", {}, reg), el("td", {}, drv), el("td", { style: "text-align:center" }, act), el("td", {}, save));
+    };
+    for (const v of S.vehicles) tb.append(row(v));
+    tb.append(row({ name: "", reg: "", driver: "", active: true }));
+    box.append(el("div", { style: "overflow-x:auto" }, el("table", { class: "fleet" },
+      el("thead", {}, el("tr", {}, el("th", { text: "Vehicle" }), el("th", { text: "Registration" }), el("th", { text: "Usual driver" }), el("th", { text: "In service" }), el("th"))), tb)));
+  }
+
+  // ---------- data ----------
+  let channel = null, pollTimer = null;
+  async function loadTrip() {
+    const trip = tripKey();
+    const [res, tr] = await Promise.all([
+      sb.from("bookings").select("*").eq("trip_date", S.date).eq("dir", S.dir).eq("status", "confirmed"),
+      sb.from("trips").select("bus_no, vehicle_id").eq("trip_date", S.date).eq("dir", S.dir),
+    ]);
+    const { data, error } = res;
+    if (trip !== tripKey()) return;
+    if (error) { notice("Couldn't load bookings. Check your connection; the page retries every minute."); S.loading = false; render(); return; }
+    S.trips = tr.data || [];
+    const dflt = Number(cfg().busesPerDay?.[S.dir]) || 1;
+    S.buses = Math.min(6, Math.max(dflt, ...S.trips.map((t) => t.bus_no), ...data.map((r) => r.bus_no || 1)));
+    if (S.bus > S.buses) S.bus = 1;
+    const B = {}, seats = {}, perBus = {};
+    for (const r of data) {
+      const b = toB(r); perBus[b.bus] = (perBus[b.bus] || 0) + 1;
+      if (b.bus !== S.bus) continue;
+      B[b.key] = b; (seats[b.seat] ||= []).push({ k: b.key, from: b.from, to: b.to });
+    }
+    S.bookings = B; S.seats = seats; S.perBus = perBus; S.loading = false;
+    if (S.selected && !freeFor(S.selected)) S.selected = null;
+    if (S.focusSeat && !segsOf(S.focusSeat).length) S.focusSeat = null;
+    render();
+  }
+  function subscribe() {
+    S.seats = {}; S.bookings = {}; S.loading = true;
+    if (channel) sb.removeChannel(channel);
+    channel = sb.channel("trip-" + tripKey()).on("postgres_changes", { event: "*", schema: "public", table: "bookings", filter: `trip_date=eq.${S.date}` }, () => loadTrip()).subscribe();
+    clearInterval(pollTimer); pollTimer = setInterval(loadTrip, 60000);
+    loadTrip();
+  }
+  function changeTrip() { S.bus = 1; S.selected = null; S.focusSeat = null; S.lastTicket = null; S.confirmCancel = null; S.error = ""; subscribe(); render(); }
+
+  // ---------- views ----------
+  function setView(v) {
+    if ((v === "manifest" || v === "fares") && !S.staff) v = "book";
+    S.view = v;
+    for (const t of document.querySelectorAll(".tab")) t.setAttribute("aria-selected", String(t.dataset.view === v));
+    $("view-book").hidden = v !== "book"; $("view-manifest").hidden = v !== "manifest"; $("view-fares").hidden = v !== "fares";
+    document.querySelector(".trip").hidden = v === "fares";
+    $("busVeh").hidden = v === "fares";
+    $("legs").hidden = v !== "book";
+    if (v === "fares") { renderFares(); loadVehicles().then(renderFleet); }
+    render();
+  }
+  for (const t of document.querySelectorAll(".tab")) t.addEventListener("click", () => { location.hash = t.dataset.view; });
+  window.addEventListener("hashchange", () => setView(location.hash.slice(1) || "book"));
+
+  function render() {
+    renderDirs(); renderDays(); renderBuses();
+    if (S.view === "book") { renderLegs(); renderVan(); renderSide(); }
+    if (S.view === "manifest") renderManifest();
+  }
+
+  // ---------- boot ----------
+  const sb = window.supabase.createClient(window.CL_CONFIG.url, window.CL_CONFIG.key);
+  S.staff = true;
+  async function start() {
+    const { data: ok } = await sb.rpc("is_staff");
+    if (!ok) { showLogin("Your login works, but it isn't on the staff list yet. Ask Neil to add your email."); return; }
+    $("login").hidden = true; $("app").hidden = false; $("signout").hidden = false;
+    $("tab-manifest").hidden = false; $("tab-fares").hidden = false;
+    const { data } = await sb.from("settings").select("data").eq("id", 1).single();
+    if (data) S.cfg = { ...DEFAULT_CFG, ...data.data };
+    if (S.cfg.placeholder !== false) notice("Fares and times are placeholders (N$ 600 end to end, 07:00 departures). Set the real ones under Fares & times.");
+    await loadVehicles();
+    S.live = true; subscribe(); setView(location.hash.slice(1) || "book");
+  }
+  function showLogin(msg) { $("app").hidden = true; $("login").hidden = false; $("signout").hidden = true; $("loginMsg").textContent = msg || ""; $("loginMsg").hidden = !msg; }
+  $("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    $("loginBtn").disabled = true;
+    const { error } = await sb.auth.signInWithPassword({ email: $("loginEmail").value.trim().toLowerCase(), password: $("loginPass").value });
+    $("loginBtn").disabled = false;
+    if (error) showLogin("That email and password don't match a staff login."); else start();
+  });
+  $("signout").addEventListener("click", async () => { await sb.auth.signOut(); location.reload(); });
+  sb.auth.getSession().then(({ data }) => (data.session ? start() : showLogin()));
+})();
+</script>
+
+</body>
+</html>
